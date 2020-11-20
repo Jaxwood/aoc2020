@@ -23,4 +23,10 @@
     <ProjectReference Include="..\Aoc2020.Lib\Aoc2020.Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="filetoparse.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
