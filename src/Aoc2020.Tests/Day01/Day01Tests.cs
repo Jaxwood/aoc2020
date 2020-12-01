@@ -17,7 +17,7 @@ namespace Aoc2020.Tests.Day01
             var parser = new Parser(filepath);
             var lines = parser.Parse(new IdentityFactory()).ToList();
             lines.Sort();
-            var actual = sut.Part1(lines.ToArray());
+            var actual = sut.Part1(lines.ToArray(), 0, lines.Count() - 1);
             Assert.Equal(expected, actual);
         }
 
@@ -30,7 +30,7 @@ namespace Aoc2020.Tests.Day01
             var parser = new Parser(filepath);
             var lines = parser.Parse(new IdentityFactory()).ToList();
             lines.Sort();
-            var actual = sut.Part2(lines.ToArray(), 0, lines.ToArray().Length - 1);
+            var actual = sut.Part2(lines.ToArray(), 0, lines.ToArray().Length - 1, 1);
             Assert.Equal(expected, actual);
         }
     }
