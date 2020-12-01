@@ -2,7 +2,7 @@
 
 namespace Aoc2020.Lib.Day01
 {
-    public class Day01
+    public class ExpenseReport
     {
         public long Part1(int[] lines)
         {

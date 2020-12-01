@@ -12,7 +12,7 @@ namespace Aoc2020.Tests.Day01
         [InlineData("Day01/Input.txt", 980499)]
         public void Part1(string filepath, int expected)
         {
-            var sut = new Aoc2020.Lib.Day01.Day01();
+            var sut = new Aoc2020.Lib.Day01.ExpenseReport();
             var parser = new Parser(filepath);
             var lines = parser.Parse(new IdentityFactory());
             var actual = sut.Part1(lines.ToArray());
@@ -24,7 +24,7 @@ namespace Aoc2020.Tests.Day01
         [InlineData("Day01/Input.txt", 200637446)]
         public void Part2(string filepath, int expected)
         {
-            var sut = new Aoc2020.Lib.Day01.Day01();
+            var sut = new Aoc2020.Lib.Day01.ExpenseReport();
             var parser = new Parser(filepath);
             var lines = parser.Parse(new IdentityFactory());
             var actual = sut.Part2(lines.ToArray());
