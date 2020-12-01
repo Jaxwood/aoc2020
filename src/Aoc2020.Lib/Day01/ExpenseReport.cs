@@ -2,48 +2,57 @@
 {
     public class ExpenseReport
     {
+        private readonly int[] lines;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="lines">The sorted list of integers</param>
+        public ExpenseReport(int[] lines)
+        {
+            this.lines = lines;
+        }
+
         /// <summary>
         /// Find 2 values that sum to a target
         /// </summary>
-        /// <param name="lines">A sorted list of integers</param>
         /// <param name="start">The start index</param>
         /// <param name="end">The end index</param>
         /// <param name="target">The target value</param>
         /// <returns>The product of the 2 values</returns>
-        public long Part1(int[] lines, int start, int end, int target = 2020)
+        public long Part1(int start, int end, int target = 2020)
         {
             switch (lines[start] + lines[end])
             {
                 case int sum when sum == target:
                     return lines[start] * lines[end];
                 case int sum when sum > target:
-                    return Part1(lines, start, decrement(end));
+                    return Part1(start, decrement(end));
                 default:
-                    return Part1(lines, increment(start), end);
+                    return Part1(increment(start), end);
             }
         }
 
         /// <summary>
         /// Find 3 values that sum to a target.
         /// </summary>
-        /// <param name="lines">A sorted list of integers</param>
         /// <param name="start">The start index</param>
         /// <param name="end">The end index</param>
         /// <param name="next">The next index</param>
         /// <param name="target">The target value to match</param>
         /// <returns>The product of the 3 values</returns>
-        public long Part2(int[] lines, int start, int end, int next, int target = 2020)
+        public long Part2(int start, int end, int next, int target = 2020)
         {
             switch (lines[start] + lines[end] + lines[next])
             {
                 case int total when total == target:
                     return lines[start] * lines[end] * lines[next];
                 case int total when total > target:
-                    return Part2(lines, start, decrement(end), increment(start));
+                    return Part2(start, decrement(end), increment(start));
                 case int _ when next == end:
-                    return Part2(lines, increment(start), end, increment(increment(start)));
+                    return Part2(increment(start), end, increment(increment(start)));
                 default:
-                    return Part2(lines, start, end, increment(next));
+                    return Part2(start, end, increment(next));
             }
         }
 
