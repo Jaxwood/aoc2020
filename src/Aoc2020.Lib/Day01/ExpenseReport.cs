@@ -50,7 +50,7 @@
         /// <summary>
         /// Increment by 1
         /// </summary>
-        /// <param name="num">The value to be decremented</param>
+        /// <param name="num">The value to be incremented</param>
         /// <returns>The incremented value</returns>
         private static int increment(int num)
         {
