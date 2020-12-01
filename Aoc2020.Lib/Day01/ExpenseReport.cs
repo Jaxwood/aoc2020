@@ -1,41 +1,57 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Aoc2020.Lib.Day01
 {
     public class ExpenseReport
     {
-        public long Part1(int[] lines)
+        public long Part1(int[] lines, int target = 2020)
         {
-            var length = lines.Count();
-            for (var i = 0; i < length; i++)
+            var start = 0; var end = lines.Length - 1;
+            while (start < end)
             {
-                for (var j = i + 1; j < length; j++)
+                var sum = lines[start] + lines[end];
+                if (sum == target)
                 {
-                    if (lines[i] + lines[j] == 2020)
-                    {
-                        return lines[i] * lines[j];
-                    }
+                    return lines[start] * lines[end];
+                }
+                if (sum > target)
+                {
+                    end--;
+                }
+                else
+                {
+                    start++;
                 }
             }
-            return 0;
+
+            throw new Exception($"could not find target: {target}");
         }
-        public long Part2(int[] lines)
+        public long Part2(int[] lines, int start, int end, int target = 2020)
         {
-            var length = lines.Count();
-            for (var i = 0; i < length; i++)
+            if (start >= end)
             {
-                for (var j = i + 1; j < length; j++)
+                throw new Exception("Start is greater than end");
+            }
+            var next = start + 1;
+            var sum = lines[start] + lines[end];
+            while (next < end)
+            {
+                var total = sum + lines[next];
+                if (total == target)
                 {
-                    for (var k = j + 1; k < length; k++)
-                    {
-                        if (lines[i] + lines[j] + lines[k] == 2020)
-                        {
-                            return lines[i] * lines[j] * lines[k];
-                        }
-                    }
+                    return lines[start] * lines[end] * lines[next];
+                }
+                if (total < target)
+                {
+                    next++;
+                }
+                else
+                {
+                    return Part2(lines, start, end - 1);
                 }
             }
-            return 0;
+            return Part2(lines, start + 1, end);
         }
     }
 }

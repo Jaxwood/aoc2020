@@ -1,4 +1,5 @@
-﻿using Aoc2020.Lib.Util;
+﻿using Aoc2020.Lib.Day01;
+using Aoc2020.Lib.Util;
 using System;
 using System.Linq;
 using Xunit;
@@ -12,9 +13,10 @@ namespace Aoc2020.Tests.Day01
         [InlineData("Day01/Input.txt", 980499)]
         public void Part1(string filepath, int expected)
         {
-            var sut = new Aoc2020.Lib.Day01.ExpenseReport();
+            var sut = new ExpenseReport();
             var parser = new Parser(filepath);
-            var lines = parser.Parse(new IdentityFactory());
+            var lines = parser.Parse(new IdentityFactory()).ToList();
+            lines.Sort();
             var actual = sut.Part1(lines.ToArray());
             Assert.Equal(expected, actual);
         }
@@ -24,10 +26,11 @@ namespace Aoc2020.Tests.Day01
         [InlineData("Day01/Input.txt", 200637446)]
         public void Part2(string filepath, int expected)
         {
-            var sut = new Aoc2020.Lib.Day01.ExpenseReport();
+            var sut = new ExpenseReport();
             var parser = new Parser(filepath);
-            var lines = parser.Parse(new IdentityFactory());
-            var actual = sut.Part2(lines.ToArray());
+            var lines = parser.Parse(new IdentityFactory()).ToList();
+            lines.Sort();
+            var actual = sut.Part2(lines.ToArray(), 0, lines.ToArray().Length - 1);
             Assert.Equal(expected, actual);
         }
     }
