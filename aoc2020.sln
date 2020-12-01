@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aoc2020.Lib", "Aoc2020.Lib\Aoc2020.Lib.csproj", "{F1D6F7AE-21C2-4554-8F7D-79C09467CE62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aoc2020.Lib", "src\Aoc2020.Lib\Aoc2020.Lib.csproj", "{F1D6F7AE-21C2-4554-8F7D-79C09467CE62}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aoc2020.Tests", "Aoc2020.Tests\Aoc2020.Tests.csproj", "{2BD80EB4-0391-49C6-86F6-6B164A4C62A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aoc2020.Tests", "src\Aoc2020.Tests\Aoc2020.Tests.csproj", "{2BD80EB4-0391-49C6-86F6-6B164A4C62A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
