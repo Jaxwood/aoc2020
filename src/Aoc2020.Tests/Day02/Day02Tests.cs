@@ -1,10 +1,6 @@
 ﻿using Aoc2020.Lib.Day02;
 using Aoc2020.Lib.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Aoc2020.Tests.Day02
@@ -13,12 +9,23 @@ namespace Aoc2020.Tests.Day02
     {
         [Theory]
         [InlineData("Day02/Example1.txt", 2)]
-        [InlineData("Day02/Input.txt", 2)]
+        [InlineData("Day02/Input.txt", 556)]
         public void Part1(string filepath, int expected)
         {
             var parser = new Parser(filepath);
             var policies = parser.Parse<Policy>(new PolicyFactory());
-            var sut = new PasswordValidator(policies);
+            var sut = new PasswordValidator(policies, new PartOneValidator());
+            Assert.Equal(expected, sut.Validate());
+        }
+
+        [Theory]
+        [InlineData("Day02/Example1.txt", 1)]
+        [InlineData("Day02/Input.txt", 605)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var policies = parser.Parse<Policy>(new PolicyFactory());
+            var sut = new PasswordValidator(policies, new PartTwoValidator());
             Assert.Equal(expected, sut.Validate());
         }
     }
