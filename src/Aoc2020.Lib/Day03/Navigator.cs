@@ -23,7 +23,19 @@ namespace Aoc2020.Lib.Day03
 
         public int Drive()
         {
-            return 0;
+            var endRow = this.map.Keys.Max(k => k.Item1);
+            var yMax = this.map.Keys.Max(k => k.Item2) + 1;
+            var currentCoord = (0, 0);
+            var trees = 0;
+
+            while (endRow >= currentCoord.Item1)
+            {
+                var (x, y) = currentCoord;
+                trees += this.map[(x, y % yMax)] == Terrain.Tree ? 1 : 0;
+                currentCoord = (x + 1, y + 3);
+            }
+
+            return trees;
         }
     }
 }

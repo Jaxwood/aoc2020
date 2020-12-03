@@ -13,6 +13,7 @@ namespace Aoc2020.Tests.Day03
     {
         [Theory]
         [InlineData("Day03/Example1.txt", 7)]
+        [InlineData("Day03/Input.txt", 156)]
         public void Part1(string filepath, int expected)
         {
             var parser = new Parser(filepath);
