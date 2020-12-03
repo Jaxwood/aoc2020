@@ -3,12 +3,12 @@ using System;
 
 namespace Aoc2020.Tests.Util
 {
-    public class LineFactory : IParseFactory<Line>
+    public class LineFactory : IParseFactory<LineStub>
     {
-        public Line Create(string raw)
+        public LineStub Create(Line line)
         {
-            var parts = raw.Split('=', ';');
-            return new Line
+            var parts = line.Raw.Split('=', ';');
+            return new LineStub
             {
                 Left = parts[0],
                 Right = parts[1],

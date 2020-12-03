@@ -33,9 +33,9 @@ namespace Aoc2020.Tests.Day02
     internal class PolicyFactory<T> : IParseFactory<T>
         where T : Policy, new()
     {
-        public T Create(string raw)
+        public T Create(Line line)
         {
-            var segements = raw.Split(' ');
+            var segements = line.Raw.Split(' ');
             var amount = segements[0].Split('-');
             var min = Convert.ToInt32(amount[0]);
             var max = Convert.ToInt32(amount[1]);
