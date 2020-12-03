@@ -11,15 +11,15 @@ namespace Aoc2020.Tests.Util
         {
             var sut = new Parser("filetoparse.txt");
             var actual = sut.Parse(new LineFactory());
-            var expected = new List<Line>()
+            var expected = new List<LineStub>()
             {
-                new Line
+                new LineStub
                 {
                     Left = "foo",
                     Right = "bar",
                     Number = 3,
                 },
-                new Line
+                new LineStub
                 {
                     Left = "baz",
                     Right = "qux",

@@ -2,6 +2,6 @@
 {
     public interface IParseFactory<T>
     {
-        T Create(string raw);
+        T Create(Line line);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Aoc2020.Tests.Util
 {
-    public record Line
+    public record LineStub
     {
         public string Left;
         public string Right;

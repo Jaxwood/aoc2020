@@ -43,9 +43,9 @@ namespace Aoc2020.Tests.Day01
 
     public class IdentityFactory : IParseFactory<int>
     {
-        public int Create(string raw)
+        public int Create(Line line)
         {
-            return Convert.ToInt32(raw);
+            return Convert.ToInt32(line.Raw);
         }
     }
 }
