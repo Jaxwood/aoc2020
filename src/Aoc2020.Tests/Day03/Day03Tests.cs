@@ -1,11 +1,7 @@
 ﻿using Aoc2020.Lib.Day03;
 using Aoc2020.Lib.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Aoc2020.Tests.Day03
@@ -24,27 +20,21 @@ namespace Aoc2020.Tests.Day03
         }
 
         [Theory]
-        [InlineData("Day03/Example1.txt", "336")]
-        [InlineData("Day03/Input.txt", "3521829480")]
-        public void Part2(string filepath, string expected)
+        [InlineData("Day03/Example1.txt", 336)]
+        [InlineData("Day03/Input.txt", 3521829480)]
+        public void Part2(string filepath, long expected)
         {
             var parser = new Parser(filepath);
             var geology = parser.Parse(new GeologyFactory());
             var sut = new Navigator(new Dictionary<(int, int), Terrain>(geology.SelectMany(g => g)));
             var results = new[] { sut.Drive(1, 1), sut.Drive(1, 3), sut.Drive(1, 5), sut.Drive(1, 7), sut.Drive(2, 1) };
-            var actual = results.Aggregate(BigInteger.One, (acc, next) => BigInteger.Multiply(acc, next));
-            Assert.Equal(BigInteger.Parse(expected), actual);
+            var actual = results.Aggregate(1L, (acc, next) => acc * next);
+            Assert.Equal(expected, actual);
         }
     }
 
     internal class GeologyFactory : IParseFactory<IEnumerable<KeyValuePair<(int, int), Terrain>>>
     {
-        private readonly Dictionary<(int, int), Terrain> map;
-
-        public GeologyFactory()
-        {
-            this.map = new Dictionary<(int, int), Terrain>();
-        }
         public IEnumerable<KeyValuePair<(int, int), Terrain>> Create(Line line)
         {
             int idx = 0;
