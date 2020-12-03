@@ -3,6 +3,7 @@ using Aoc2020.Lib.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,6 +21,24 @@ namespace Aoc2020.Tests.Day03
             var geology = parser.Parse(new GeologyFactory());
             var sut = new Navigator(new Dictionary<(int, int), Terrain>(geology.SelectMany(g => g)));
             Assert.Equal(expected, sut.Drive());
+        }
+
+        [Theory]
+        [InlineData("Day03/Example1.txt", "336")]
+        [InlineData("Day03/Input.txt", "3521829480")]
+        public void Part2(string filepath, string expected)
+        {
+            var parser = new Parser(filepath);
+            var geology = parser.Parse(new GeologyFactory());
+            var sut = new Navigator(new Dictionary<(int, int), Terrain>(geology.SelectMany(g => g)));
+            Assert.Equal(BigInteger.Parse(expected),
+                BigInteger.Multiply(
+                    BigInteger.Multiply(
+                        BigInteger.Multiply(
+                            sut.Drive(1, 1), sut.Drive(1, 3)),
+                        BigInteger.Multiply(
+                            sut.Drive(1, 5), sut.Drive(1, 7))),
+                    sut.Drive(2, 1)));
         }
     }
 

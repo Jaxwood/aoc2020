@@ -21,7 +21,7 @@ namespace Aoc2020.Lib.Day03
             this.map = map;
         }
 
-        public int Drive()
+        public int Drive(int down = 1, int right = 3)
         {
             var endRow = this.map.Keys.Max(k => k.Item1);
             var yMax = this.map.Keys.Max(k => k.Item2) + 1;
@@ -32,7 +32,7 @@ namespace Aoc2020.Lib.Day03
             {
                 var (x, y) = currentCoord;
                 trees += this.map[(x, y % yMax)] == Terrain.Tree ? 1 : 0;
-                currentCoord = (x + 1, y + 3);
+                currentCoord = (x + down, y + right);
             }
 
             return trees;
