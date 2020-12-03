@@ -31,14 +31,9 @@ namespace Aoc2020.Tests.Day03
             var parser = new Parser(filepath);
             var geology = parser.Parse(new GeologyFactory());
             var sut = new Navigator(new Dictionary<(int, int), Terrain>(geology.SelectMany(g => g)));
-            Assert.Equal(BigInteger.Parse(expected),
-                BigInteger.Multiply(
-                    BigInteger.Multiply(
-                        BigInteger.Multiply(
-                            sut.Drive(1, 1), sut.Drive(1, 3)),
-                        BigInteger.Multiply(
-                            sut.Drive(1, 5), sut.Drive(1, 7))),
-                    sut.Drive(2, 1)));
+            var results = new[] { sut.Drive(1, 1), sut.Drive(1, 3), sut.Drive(1, 5), sut.Drive(1, 7), sut.Drive(2, 1) };
+            var actual = results.Aggregate(BigInteger.One, (acc, next) => BigInteger.Multiply(acc, next));
+            Assert.Equal(BigInteger.Parse(expected), actual);
         }
     }
 
