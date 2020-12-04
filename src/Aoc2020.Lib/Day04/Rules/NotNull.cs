@@ -8,7 +8,7 @@
                 passport.BirthYear != null &&
                 passport.IssueYear != null &&
                 passport.ExperationYear != null &&
-                !string.IsNullOrEmpty(passport.Height) &&
+                passport.Height != null &&
                 !string.IsNullOrEmpty(passport.HairColor) &&
                 !string.IsNullOrEmpty(passport.EyeColor);
         }

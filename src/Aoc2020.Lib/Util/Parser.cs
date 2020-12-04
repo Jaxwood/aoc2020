@@ -20,7 +20,7 @@ namespace Aoc2020.Lib.Util
             int lineNum = 0;
             while ((line = file.ReadLine()) != null)
             {
-                result.Add(factory.Create(new Line(line, lineNum++)));
+                result.Add(factory.Create(new Line(line, lineNum++, file.EndOfStream)));
             }
             file.Close();
 

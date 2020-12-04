@@ -3,6 +3,7 @@ using Aoc2020.Lib.Day04.Rules;
 using Aoc2020.Lib.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Aoc2020.Tests.Day04
@@ -16,8 +17,8 @@ namespace Aoc2020.Tests.Day04
         {
             var parser = new Parser(filepath);
             var factory = new PassportFactory();
-            parser.Parse(factory);
-            var sut = new PassportValidator(factory.Passports, new[] { new NotNull() });
+            var passports = parser.Parse(factory).Where(p => p != null);
+            var sut = new PassportValidator(passports, new[] { new NotNull() });
             var actual = sut.Validate();
             Assert.Equal(expected, actual);
         }
@@ -30,18 +31,17 @@ namespace Aoc2020.Tests.Day04
         {
             var parser = new Parser(filepath);
             var factory = new PassportFactory();
-            parser.Parse(factory);
-            var sut = new PassportValidator(factory.Passports, new Rule[] {
+            var passports = parser.Parse(factory).Where(p => p != null);
+            var sut = new PassportValidator(passports, new Rule[] {
                 new InRangeRule(p => p.BirthYear, p => 1920, p => 2020),
                 new InRangeRule(p => p.ExperationYear, p => 2020, p => 2030),
                 new ContainsRule(p => p.EyeColor, new [] { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" }),
                 new RegexRule(p => p.HairColor, "^#[0-9a-f]{6}$"),
-                new InRangeRule(
-                    p => !string.IsNullOrEmpty(p.Height) && (p.Height.Contains("in") || p.Height.Contains("cm")) ?
-                        Convert.ToInt32(p.Height[0..^2]) :
-                        (int?) null, 
-                    p => p.Height.EndsWith("cm") ? 150 : 59,
-                    p => p.Height.EndsWith("cm") ? 193 : 76),
+                new PredicateRule(
+                    p => p.Unit == Unit.Metric,
+                    new InRangeRule(p => p.Height, p => 150, p => 193),
+                    new InRangeRule(p => p.Height, p => 59, p => 76)
+                ),
                 new InRangeRule(p => p.IssueYear, p => 2010, p => 2020),
                 new RegexRule(p => p.PassportId, "^[0-9]{9}$"),
             });
@@ -52,13 +52,7 @@ namespace Aoc2020.Tests.Day04
 
     internal class PassportFactory : IParseFactory<Passport>
     {
-        public List<Passport> Passports { get; private set; }
         private Passport passport;
-
-        public PassportFactory()
-        {
-            this.Passports = new List<Passport>();
-        }
 
         public Passport Create(Line line)
         {
@@ -69,15 +63,20 @@ namespace Aoc2020.Tests.Day04
 
             if (string.IsNullOrEmpty(line.Raw))
             {
-                this.Passports.Add(this.passport);
-                this.passport = new Passport();
-                return null;
+                var copy = this.passport;
+                this.passport = null;
+                return copy;
             }
 
             var segments = line.Raw.Split(' ');
             foreach(var segment in segments)
             {
                 UpdatePassport(segment.Split(':'));
+            }
+
+            if (line.LastLine)
+            {
+                return this.passport;
             }
 
             return null;
@@ -88,7 +87,7 @@ namespace Aoc2020.Tests.Day04
             var identifier = segments[0];
             var value = segments[1];
 
-            switch (segments[0])
+            switch (identifier)
             {
                 case "byr":
                     this.passport.BirthYear = Convert.ToInt32(value);
@@ -100,7 +99,15 @@ namespace Aoc2020.Tests.Day04
                     this.passport.ExperationYear = Convert.ToInt32(value);
                     break;
                 case "hgt":
-                    this.passport.Height = value;
+                    if (value.Contains("cm") || value.Contains("in"))
+                    {
+                        this.passport.Unit = value.Contains("cm") ? Unit.Metric : Unit.Imperial;
+                        this.passport.Height = Convert.ToInt32(value[0..^2]);
+                    }
+                    else
+                    {
+                        this.passport.Height = Convert.ToInt32(value);
+                    }
                     break;
                 case "hcl":
                     this.passport.HairColor = value;
