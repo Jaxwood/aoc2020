@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Aoc2020.Lib.Day04
@@ -17,13 +16,9 @@ namespace Aoc2020.Lib.Day04
 
         public int Validate()
         {
-            var valid = 0;
-            foreach(var passport in this.passports)
-            {
-                valid += rules.All(r => r.IsValid(passport)) ? 1 : 0;
-            }
-
-            return valid;
+            return passports.Aggregate(0, (acc, next) => {
+                return (rules.All(r => r.IsValid(next)) ? 1 : 0) + acc;
+            });
         }
     }
 }

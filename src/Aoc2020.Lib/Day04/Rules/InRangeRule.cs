@@ -17,16 +17,9 @@ namespace Aoc2020.Lib.Day04.Rules
 
         public bool IsValid(Passport passport)
         {
-            try
-            {
-                var value = this.selector(passport);
-                if (!value.HasValue) return false;
-                return value >= this.min(passport) && value <= this.max(passport);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var value = this.selector(passport);
+            if (!value.HasValue) return false;
+            return value >= this.min(passport) && value <= this.max(passport);
         }
     }
 }
