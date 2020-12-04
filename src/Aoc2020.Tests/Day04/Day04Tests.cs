@@ -33,16 +33,16 @@ namespace Aoc2020.Tests.Day04
             var factory = new PassportFactory();
             var passports = parser.Parse(factory).Where(p => p != null);
             var sut = new PassportValidator(passports, new Rule[] {
-                new InRangeRule(p => p.BirthYear, p => 1920, p => 2020),
-                new InRangeRule(p => p.ExperationYear, p => 2020, p => 2030),
+                new InRangeRule(p => p.BirthYear, 1920, 2020),
+                new InRangeRule(p => p.ExperationYear, 2020, 2030),
                 new ContainsRule(p => p.EyeColor, new [] { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" }),
                 new RegexRule(p => p.HairColor, "^#[0-9a-f]{6}$"),
                 new PredicateRule(
                     p => p.Unit == Unit.Metric,
-                    new InRangeRule(p => p.Height, p => 150, p => 193),
-                    new InRangeRule(p => p.Height, p => 59, p => 76)
+                    new InRangeRule(p => p.Height, 150, 193),
+                    new InRangeRule(p => p.Height, 59, 76)
                 ),
-                new InRangeRule(p => p.IssueYear, p => 2010, p => 2020),
+                new InRangeRule(p => p.IssueYear, 2010, 2020),
                 new RegexRule(p => p.PassportId, "^[0-9]{9}$"),
             });
             var actual = sut.Validate();

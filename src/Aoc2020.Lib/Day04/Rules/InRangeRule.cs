@@ -5,10 +5,10 @@ namespace Aoc2020.Lib.Day04.Rules
     public class InRangeRule : Rule
     {
         private readonly Func<Passport, int?> selector;
-        private Func<Passport, int> min;
-        private readonly Func<Passport, int> max;
+        private int min;
+        private readonly int max;
 
-        public InRangeRule(Func<Passport, int?> selector, Func<Passport, int> min, Func<Passport, int> max)
+        public InRangeRule(Func<Passport, int?> selector, int min, int max)
         {
             this.selector = selector;
             this.min = min;
@@ -19,7 +19,7 @@ namespace Aoc2020.Lib.Day04.Rules
         {
             var value = this.selector(passport);
             if (!value.HasValue) return false;
-            return value >= this.min(passport) && value <= this.max(passport);
+            return value >= this.min && value <= this.max;
         }
     }
 }
