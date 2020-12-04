@@ -7,10 +7,12 @@ namespace Aoc2020.Lib.Day04
     public class PassportValidator
     {
         private IEnumerable<Passport> passports;
+        private readonly IEnumerable<Rule> rules;
 
-        public PassportValidator(IEnumerable<Passport> passports)
+        public PassportValidator(IEnumerable<Passport> passports, IEnumerable<Rule> rules)
         {
             this.passports = passports;
+            this.rules = rules;
         }
 
         public int Validate()
@@ -18,7 +20,7 @@ namespace Aoc2020.Lib.Day04
             var valid = 0;
             foreach(var passport in this.passports)
             {
-                valid += passport.IsValid() ? 1 : 0;
+                valid += rules.All(r => r.IsValid(passport)) ? 1 : 0;
             }
 
             return valid;

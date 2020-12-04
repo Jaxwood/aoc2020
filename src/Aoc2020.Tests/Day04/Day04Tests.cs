@@ -1,10 +1,8 @@
 ﻿using Aoc2020.Lib.Day04;
+using Aoc2020.Lib.Day04.Rules;
 using Aoc2020.Lib.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Aoc2020.Tests.Day04
@@ -19,7 +17,34 @@ namespace Aoc2020.Tests.Day04
             var parser = new Parser(filepath);
             var factory = new PassportFactory();
             parser.Parse(factory);
-            var sut = new PassportValidator(factory.Passports);
+            var sut = new PassportValidator(factory.Passports, new[] { new NotNull() });
+            var actual = sut.Validate();
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day04/Invalid.txt", 0)]
+        [InlineData("Day04/Valid.txt", 4)]
+        [InlineData("Day04/Input.txt", 224)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var factory = new PassportFactory();
+            parser.Parse(factory);
+            var sut = new PassportValidator(factory.Passports, new Rule[] {
+                new InRangeRule(p => p.BirthYear, p => 1920, p => 2020),
+                new InRangeRule(p => p.ExperationYear, p => 2020, p => 2030),
+                new ContainsRule(p => p.EyeColor, new [] { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" }),
+                new RegexRule(p => p.HairColor, "^#[0-9a-f]{6}$"),
+                new InRangeRule(
+                    p => !string.IsNullOrEmpty(p.Height) && (p.Height.Contains("in") || p.Height.Contains("cm")) ?
+                        Convert.ToInt32(p.Height[0..^2]) :
+                        (int?) null, 
+                    p => p.Height.EndsWith("cm") ? 150 : 59,
+                    p => p.Height.EndsWith("cm") ? 193 : 76),
+                new InRangeRule(p => p.IssueYear, p => 2010, p => 2020),
+                new RegexRule(p => p.PassportId, "^[0-9]{9}$"),
+            });
             var actual = sut.Validate();
             Assert.Equal(expected, actual);
         }
@@ -34,6 +59,7 @@ namespace Aoc2020.Tests.Day04
         {
             this.Passports = new List<Passport>();
         }
+
         public Passport Create(Line line)
         {
             if (this.passport == null)
@@ -90,7 +116,6 @@ namespace Aoc2020.Tests.Day04
                     break;
                 default:
                     throw new Exception($"unknown identifier {identifier}");
-                    break;
             }
         }
     }

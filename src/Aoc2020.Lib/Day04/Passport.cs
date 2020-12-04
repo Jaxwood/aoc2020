@@ -11,15 +11,9 @@
         public string HairColor { get; set; }
         public string EyeColor { get; set; }
 
-        public bool IsValid()
+        public bool IsValid(Rule rule)
         {
-            return !string.IsNullOrEmpty(this.PassportId) &&
-                this.BirthYear != null &&
-                this.IssueYear != null &&
-                this.ExperationYear != null &&
-                !string.IsNullOrEmpty(this.Height) &&
-                !string.IsNullOrEmpty(this.HairColor) &&
-                !string.IsNullOrEmpty(this.EyeColor);
+            return rule.IsValid(this);
         }
     }
 }
