@@ -23,12 +23,12 @@ namespace Aoc2020.Lib.Day05
                 switch (character)
                 {
                     case char f when f == high:
-                        var range = upperBound - lowerBound + 1;
-                        upperBound -= range / 2;
+                        var upperRange = upperBound - lowerBound + 1;
+                        upperBound -= upperRange / 2;
                         break;
                     case char b when b == low:
-                        var range2 = upperBound - lowerBound + 1;
-                        lowerBound += range2 / 2;
+                        var lowerRange = upperBound - lowerBound + 1;
+                        lowerBound += lowerRange / 2;
                         break;
                     default:
                         throw new Exception($"Unknown character {character}");
