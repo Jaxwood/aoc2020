@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Aoc2020.Lib.Day05
 {
@@ -7,53 +6,35 @@ namespace Aoc2020.Lib.Day05
     {
         public Seat Scan(string seat)
         {
-            var rows = seat[0..^3];
-            var lowerBound = 0;
-            var upperBound = 127;
-            foreach (var row in rows)
-            {
-                switch (row)
-                {
-                    case 'F':
-                        var range = upperBound - lowerBound + 1;
-                        upperBound -= range / 2;
-                        break;
-                    case 'B':
-                        var range2 = upperBound - lowerBound + 1;
-                        lowerBound += range2 / 2;
-                        break;
-                    default:
-                        throw new Exception($"Unknown character {row}");
-                }
-            }
-
-            var selectedRow = upperBound;
-            lowerBound = 0;
-            upperBound = 7;
-
-            var columns = seat[^3..];
-            foreach (var column in columns)
-            {
-                switch (column)
-                {
-                    case 'L':
-                        var range = upperBound - lowerBound + 1;
-                        upperBound -= range / 2;
-                        break;
-                    case 'R':
-                        var range2 = upperBound - lowerBound + 1;
-                        lowerBound += range2 / 2;
-                        break;
-                    default:
-                        throw new Exception($"Unknown character {column}");
-                }
-            }
+            var selectedRow = Find(seat[0..^3], 'F', 'B', 0, 127);
+            var selectedColumn = Find(seat[^3..], 'L', 'R', 0, 7);
 
             return new Seat()
             {
                 Row = selectedRow,
-                Column = upperBound,
+                Column = selectedColumn,
             };
+        }
+
+        private static int Find(string sequence, char high, char low, int lowerBound, int upperBound)
+        {
+            foreach (var character in sequence)
+            {
+                switch (character)
+                {
+                    case char f when f == high:
+                        var range = upperBound - lowerBound + 1;
+                        upperBound -= range / 2;
+                        break;
+                    case char b when b == low:
+                        var range2 = upperBound - lowerBound + 1;
+                        lowerBound += range2 / 2;
+                        break;
+                    default:
+                        throw new Exception($"Unknown character {character}");
+                }
+            }
+            return upperBound;
         }
 
         public record Seat
