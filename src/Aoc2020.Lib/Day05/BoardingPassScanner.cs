@@ -6,8 +6,8 @@ namespace Aoc2020.Lib.Day05
     {
         public Seat Scan(string seat)
         {
-            var selectedRow = Find(seat[0..^3], 'F', 'B', 0, 127);
-            var selectedColumn = Find(seat[^3..], 'L', 'R', 0, 7);
+            var selectedRow = Find(seat[0..^3], 0, 127);
+            var selectedColumn = Find(seat[^3..], 0, 7);
 
             return new Seat()
             {
@@ -16,17 +16,19 @@ namespace Aoc2020.Lib.Day05
             };
         }
 
-        private static int Find(string sequence, char high, char low, int lowerBound, int upperBound)
+        private static int Find(string sequence, int lowerBound, int upperBound)
         {
             foreach (var character in sequence)
             {
                 switch (character)
                 {
-                    case char f when f == high:
+                    case 'F':
+                    case 'L':
                         var upperRange = upperBound - lowerBound + 1;
                         upperBound -= upperRange / 2;
                         break;
-                    case char b when b == low:
+                    case 'B':
+                    case 'R':
                         var lowerRange = upperBound - lowerBound + 1;
                         lowerBound += lowerRange / 2;
                         break;
