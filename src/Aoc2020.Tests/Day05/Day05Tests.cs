@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using static Aoc2020.Lib.Day05.BoardingPassScanner;
 
 namespace Aoc2020.Tests.Day05
 {
@@ -48,9 +47,10 @@ namespace Aoc2020.Tests.Day05
             {
                 seats.Add(sut.Scan(line).SeatId());
             }
-            var all = new HashSet<int>(Enumerable.Range(seats.Min(), seats.Max()));
-            all.ExceptWith(seats);
-            Assert.Equal(731, all.Min());
+            var actual = Enumerable.Range(seats.Min(), seats.Max())
+                                   .SkipWhile(s => seats.Contains(s))
+                                   .First();
+            Assert.Equal(731, actual);
         }
     }
 
