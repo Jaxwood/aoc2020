@@ -9,11 +9,26 @@ namespace Aoc2020.Tests.Day06
     {
         [Theory]
         [InlineData("Day06/Example1.txt", 11)]
-        [InlineData("Day06/Input.txt", 11)]
+        [InlineData("Day06/Input.txt", 7128)]
         public void Part1(string filepath, int expected)
         {
             var parser = new Parser(filepath);
             var answers = parser.Parse(new AnswerFactory()).Where(c => c != null);
+            var actual = answers.Aggregate(0, (acc, next) =>
+            {
+                acc += next.Count;
+                return acc;
+            });
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day06/Example1.txt", 6)]
+        [InlineData("Day06/Input.txt", 3640)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var answers = parser.Parse(new SameAnswerFactory()).Where(c => c != null);
             var actual = answers.Aggregate(0, (acc, next) =>
             {
                 acc += next.Count;
@@ -26,10 +41,6 @@ namespace Aoc2020.Tests.Day06
     internal class AnswerFactory : IParseFactory<HashSet<char>>
     {
         private HashSet<char> set;
-
-        public AnswerFactory()
-        {
-        }
 
         public HashSet<char> Create(Line line)
         {
@@ -56,6 +67,55 @@ namespace Aoc2020.Tests.Day06
             }
 
             return null;
+        }
+    }
+    internal class SameAnswerFactory : IParseFactory<HashSet<char>>
+    {
+        private List<string> answers;
+
+        public HashSet<char> Create(Line line)
+        {
+            if (answers == null)
+            {
+                answers = new List<string>();
+            }
+
+            if (string.IsNullOrEmpty(line.Raw))
+            {
+                var same = FindSameAnswers();
+                this.answers = null;
+                return same;
+            }
+
+            answers.Add(line.Raw);
+            
+            if (line.LastLine)
+            {
+                return FindSameAnswers();
+            }
+
+            return null;
+        }
+
+        private HashSet<char> FindSameAnswers()
+        {
+            if (this.answers.Count() == 1)
+            {
+                return new HashSet<char>(this.answers[0]);
+            }
+
+            var answerGroup = new List<HashSet<char>>();
+            this.answers.ForEach(c => {
+                answerGroup.Add(new HashSet<char>(c));
+            });
+
+            var groups = answerGroup.Aggregate((acc, next) =>
+            {
+                acc.IntersectWith(next);
+                return acc;
+            });
+
+            return groups;
         }
     }
 }
