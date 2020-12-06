@@ -82,7 +82,7 @@ namespace Aoc2020.Tests.Day06
 
             if (string.IsNullOrEmpty(line.Raw))
             {
-                var same = FindSameAnswers();
+                var same = GroupAnswers();
                 this.answers = null;
                 return same;
             }
@@ -91,31 +91,21 @@ namespace Aoc2020.Tests.Day06
             
             if (line.LastLine)
             {
-                return FindSameAnswers();
+                return GroupAnswers();
             }
 
             return null;
         }
 
-        private HashSet<char> FindSameAnswers()
+        private HashSet<char> GroupAnswers()
         {
-            if (this.answers.Count() == 1)
-            {
-                return new HashSet<char>(this.answers[0]);
-            }
-
-            var answerGroup = new List<HashSet<char>>();
-            this.answers.ForEach(c => {
-                answerGroup.Add(new HashSet<char>(c));
-            });
-
-            var groups = answerGroup.Aggregate((acc, next) =>
-            {
-                acc.IntersectWith(next);
-                return acc;
-            });
-
-            return groups;
+            return this.answers
+                .Select(c => new HashSet<char>(c))
+                .Aggregate((acc, next) =>
+                   {
+                       acc.IntersectWith(new HashSet<char>(next));
+                       return acc;
+                   });
         }
     }
 }
