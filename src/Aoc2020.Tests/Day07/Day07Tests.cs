@@ -21,6 +21,19 @@ namespace Aoc2020.Tests.Day07
             var actual = sut.Process("shiny gold");
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day07/Example1.txt", 32)]
+        [InlineData("Day07/Example2.txt", 126)]
+        [InlineData("Day07/Input.txt", 12414)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var bags = parser.Parse(new BagFactory());
+            var sut = new LuggageProcessor(new Dictionary<string, Bag[]>(bags));
+            var actual = sut.Pack("shiny gold");
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class BagFactory : IParseFactory<KeyValuePair<string, Bag[]>>
