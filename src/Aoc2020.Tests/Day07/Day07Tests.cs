@@ -60,7 +60,7 @@ namespace Aoc2020.Tests.Day07
                     {
                         bags.Add(new Bag
                         {
-                            Amount = 1,
+                            Amount = 0,
                             Name = match.Groups[2].Value.Trim(),
                         });
 

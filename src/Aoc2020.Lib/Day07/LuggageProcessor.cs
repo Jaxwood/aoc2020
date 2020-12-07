@@ -39,40 +39,19 @@ namespace Aoc2020.Lib.Day07
             return result.Count;
         }
 
-        public int Pack(string name)
+        public int Pack(string name, int total = 0)
         {
-            var cost = new Dictionary<string, int>();
-            var queue = new Queue<string>();
-            var leafs = GetContainingBags("no other");
-            var visited = new HashSet<string>();
-            foreach (var leaf in leafs)
+            if(!HasBags(name))
             {
-                queue.Enqueue(leaf);
-                cost.Add(leaf, 0);
-                visited.Add(leaf);
+                return 0;
             }
 
-            while (queue.Count > 0)
+            foreach (var bag in this.bags[name])
             {
-                var next = GetContainingBags(queue.Dequeue());
-                foreach (var n in next)
-                {
-                    var bag = this.bags[n];
-                    if (HasRequired(bag, cost) && !visited.Contains(n))
-                    {
-                        cost.Add(n, bag.Sum(b => b.Amount + b.Amount * cost[b.Name]));
-                        visited.Add(n);
-                        queue.Enqueue(n);
-                    }
-                }
+                total += bag.Amount + bag.Amount * Pack(bag.Name);
             }
 
-            return cost[name];
-        }
-
-        private bool HasRequired(Bag[] bag, Dictionary<string, int> cost)
-        {
-            return bag.All(b => cost.ContainsKey(b.Name));
+            return total;
         }
 
         private bool HasBags(string bag)
