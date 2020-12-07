@@ -13,35 +13,27 @@ namespace Aoc2020.Lib.Day07
             this.bags = bags;
         }
 
-        public int Process(string name)
+        public int Process(string name, HashSet<string> seen, int total = 0)
         {
-            var result = new HashSet<string>();
-            var queue = new Queue<string>();
-            foreach(var bag in GetContainingBags(name))
-            {
-                result.Add(bag);
-                queue.Enqueue(bag);
-            }
+            var containingBags = GetContainingBags(name);
 
-            while (queue.Count > 0)
+            if (!containingBags.Any()) return 0;
+
+            foreach (var bag in containingBags)
             {
-                var bagName = queue.Dequeue();
-                foreach (var bag in GetContainingBags(bagName))
+                if (!seen.Contains(bag))
                 {
-                    if (HasBags(bag))
-                    {
-                        queue.Enqueue(bag);
-                        result.Add(bag);
-                    }
+                    seen.Add(bag);
+                    total += 1 + Process(bag, seen);
                 }
-
             }
-            return result.Count;
+
+            return total;
         }
 
         public int Pack(string name, int total = 0)
         {
-            if(!HasBags(name))
+            if (name == "no other")
             {
                 return 0;
             }
@@ -52,11 +44,6 @@ namespace Aoc2020.Lib.Day07
             }
 
             return total;
-        }
-
-        private bool HasBags(string bag)
-        {
-            return string.Compare(bag, "no other", StringComparison.CurrentCultureIgnoreCase) != 0;
         }
 
         private IEnumerable<string> GetContainingBags(string name)

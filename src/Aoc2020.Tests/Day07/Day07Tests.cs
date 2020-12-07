@@ -18,7 +18,7 @@ namespace Aoc2020.Tests.Day07
             var parser = new Parser(filepath);
             var bags = parser.Parse(new BagFactory());
             var sut = new LuggageProcessor(new Dictionary<string, Bag[]>(bags));
-            var actual = sut.Process("shiny gold");
+            var actual = sut.Process("shiny gold", new HashSet<string>());
             Assert.Equal(expected, actual);
         }
 
