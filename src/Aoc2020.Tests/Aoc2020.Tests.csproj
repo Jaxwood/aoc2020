@@ -72,6 +72,9 @@
     <None Update="Day07\Input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Day08\Example2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Day08\Example1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

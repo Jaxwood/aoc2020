@@ -1,47 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Aoc2020.Lib.Day08
 {
     public class Program
     {
         private Instruction[] instructions;
-        private int index;
-        private int accumulator;
 
         public Program(Instruction[] instructions)
         {
             this.instructions = instructions;
-            this.index = 0;
-            this.accumulator = 0;
         }
 
-        public int Run()
+        public int Run(int overrideIndex, bool haltOnRepeat = true)
         {
+            var index = 0;
+            var accumulator = 0;
             var previousIndexes = new HashSet<int>();
             while (true)
             {
-                var instruction = this.instructions[this.index];
-                if (previousIndexes.Contains(this.index))
+                if (index >= this.instructions.Length)
                 {
-                    return this.accumulator;
+                    return accumulator;
                 }
 
-                previousIndexes.Add(this.index);
+                var instruction = this.instructions[index];
+                if (haltOnRepeat && previousIndexes.Contains(index))
+                {
+                    return accumulator;
+                }
+
+                previousIndexes.Add(index);
                 switch (instruction.Type)
                 {
+                    case InstructionType t when t == InstructionType.Jump && index == overrideIndex:
+                        index++;
+                        break;
+                    case InstructionType t when t == InstructionType.NoOperation && index == overrideIndex:
+                        index += GetNumber(instruction);
+                        break;
                     case InstructionType.Jump:
-                        this.index += GetNumber(instruction);
+                        index += GetNumber(instruction);
                         break;
                     case InstructionType.Accumulate:
-                        this.accumulator += GetNumber(instruction);
-                        this.index++;
+                        accumulator += GetNumber(instruction);
+                        index++;
                         break;
                     case InstructionType.NoOperation:
-                        this.index++;
+                        index++;
                         break;
                     default:
                         throw new Exception("Unknown instruction");

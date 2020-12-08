@@ -1,9 +1,7 @@
 ﻿using Aoc2020.Lib.Day08;
 using Aoc2020.Lib.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,7 +18,19 @@ namespace Aoc2020.Tests.Day08
             var parser = new Parser(filepath);
             var instructions = parser.Parse(new InstructionFactory());
             var sut = new Program(instructions.ToArray());
-            var actual = sut.Run();
+            var actual = sut.Run(-1);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day08/Example2.txt", 8)]
+        [InlineData("Day08/Input.txt", 2251)]
+        public async Task Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var instructions = parser.Parse(new InstructionFactory()).ToArray();
+            var sut = new Program(instructions);
+            var actual = sut.Run(277, false);
             Assert.Equal(expected, actual);
         }
     }
