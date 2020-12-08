@@ -28,9 +28,17 @@ namespace Aoc2020.Tests.Day08
         public async Task Part2(string filepath, int expected)
         {
             var parser = new Parser(filepath);
-            var instructions = parser.Parse(new InstructionFactory()).ToArray();
-            var sut = new Program(instructions);
-            var actual = sut.Run(277, false);
+            var instructions = parser.Parse(new InstructionFactory());
+            var sut = new Program(instructions.ToArray());
+            var actual = instructions.ToList().Select((i, idx) =>
+            {
+                if (i.Type == InstructionType.Jump || i.Type == InstructionType.NoOperation)
+                {
+                    return sut.Run(idx, false);
+                }
+                return sut.Run(-1, false);
+            }).FirstOrDefault(r => r != 0);
+
             Assert.Equal(expected, actual);
         }
     }

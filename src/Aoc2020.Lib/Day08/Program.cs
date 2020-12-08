@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Aoc2020.Lib.Day08
 {
@@ -26,8 +25,9 @@ namespace Aoc2020.Lib.Day08
                 }
 
                 var instruction = this.instructions[index];
-                if (haltOnRepeat && previousIndexes.Contains(index))
+                if (previousIndexes.Contains(index))
                 {
+                    if (!haltOnRepeat) return 0;
                     return accumulator;
                 }
 
