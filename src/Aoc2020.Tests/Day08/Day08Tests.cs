@@ -19,13 +19,13 @@ namespace Aoc2020.Tests.Day08
             var instructions = parser.Parse(new InstructionFactory());
             var sut = new Program(instructions.ToArray());
             var actual = sut.Run(-1);
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual.Value);
         }
 
         [Theory]
         [InlineData("Day08/Example2.txt", 8)]
         [InlineData("Day08/Input.txt", 2251)]
-        public async Task Part2(string filepath, int expected)
+        public void Part2(string filepath, int expected)
         {
             var parser = new Parser(filepath);
             var instructions = parser.Parse(new InstructionFactory());
@@ -37,9 +37,11 @@ namespace Aoc2020.Tests.Day08
                     return sut.Run(idx, false);
                 }
                 return sut.Run(-1, false);
-            }).FirstOrDefault(r => r != 0);
+            })
+            .OfType<Success<int>>()
+            .First();
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual.Value);
         }
     }
 

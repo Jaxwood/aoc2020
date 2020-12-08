@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aoc2020.Lib.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Aoc2020.Lib.Day08
@@ -12,7 +13,7 @@ namespace Aoc2020.Lib.Day08
             this.instructions = instructions;
         }
 
-        public int Run(int overrideIndex, bool haltOnRepeat = true)
+        public Result<int> Run(int overrideIndex, bool haltOnRepeat = true)
         {
             var index = 0;
             var accumulator = 0;
@@ -21,14 +22,14 @@ namespace Aoc2020.Lib.Day08
             {
                 if (index >= this.instructions.Length)
                 {
-                    return accumulator;
+                    return new Success<int>(accumulator);
                 }
 
                 var instruction = this.instructions[index];
                 if (previousIndexes.Contains(index))
                 {
-                    if (!haltOnRepeat) return 0;
-                    return accumulator;
+                    if (!haltOnRepeat) return new Failure<int>();
+                    return new Success<int>(accumulator);
                 }
 
                 previousIndexes.Add(index);
