@@ -1,5 +1,4 @@
 ﻿using Aoc2020.Lib.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,6 +28,44 @@ namespace Aoc2020.Lib.Day09
             }
 
             return new Failure<long>();
+        }
+
+        public Result<long> Weakness()
+        {
+            var cypher = this.Cypher();
+            for (int i = 0; i < this.lines.Length; i++)
+            {
+                var result = AddUpTo(i, cypher.Value);
+                if (result is Success<int>)
+                {
+                    var nums = this.lines.Skip(i).Take(result.Value - i);
+                    if (nums.Count() > 1)
+                    {
+                        return new Success<long>(nums.Min() + nums.Max());
+                    }
+                }
+            }
+
+            return new Failure<long>();
+        }
+
+        private Result<int> AddUpTo(int index, long target)
+        {
+            long sum = 0;
+            for (int i = index; i < this.lines.Length; i++)
+            {
+                sum += this.lines[i];
+
+                if (sum == target)
+                {
+                    return new Success<int>(i);
+                }
+                if (sum > target)
+                {
+                    return new Failure<int>();
+                }
+            }
+            return new Failure<int>();
         }
 
         private bool CanSumTo(int index, long target)

@@ -20,6 +20,18 @@ namespace Aoc2020.Tests.Day09
             var actual = sut.Cypher();
             Assert.Equal(expected, actual.Value);
         }
+
+        [Theory]
+        [InlineData("Day09/Example1.txt", 5, 62)]
+        [InlineData("Day09/Input.txt", 25, 13935797)]
+        public void Part2(string filepath, int preamble, int expected)
+        {
+            var parser = new Parser(filepath);
+            var lines = parser.Parse<long>(new XMAXFactory());
+            var sut = new XMASEncrypter(lines.ToArray(), preamble);
+            var actual = sut.Weakness();
+            Assert.Equal(expected, actual.Value);
+        }
     }
 
     internal class XMAXFactory : IParseFactory<long>
