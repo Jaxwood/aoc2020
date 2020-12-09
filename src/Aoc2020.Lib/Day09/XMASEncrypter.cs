@@ -21,7 +21,7 @@ namespace Aoc2020.Lib.Day09
             for (int i = 0; i < this.lines.Length - this.preamble; i++)
             {
                 long target = this.lines[i + this.preamble];
-                if (!CanSumTo(i, target))
+                if (this.CannotSumTo(i, target))
                 {
                     return new Success<long>(target);
                 }
@@ -35,30 +35,27 @@ namespace Aoc2020.Lib.Day09
             var cypher = this.Cypher();
             for (int i = 0; i < this.lines.Length; i++)
             {
-                var result = AddUpTo(i, cypher.Value);
+                var result = this.SumTo(i, cypher.Value);
                 if (result is Success<int>)
                 {
-                    var nums = this.lines.Skip(i).Take(result.Value - i);
-                    if (nums.Count() > 1)
-                    {
-                        return new Success<long>(nums.Min() + nums.Max());
-                    }
+                    var nums = this.lines.Skip(i).Take(result.Value);
+                    return new Success<long>(nums.Min() + nums.Max());
                 }
             }
 
             return new Failure<long>();
         }
 
-        private Result<int> AddUpTo(int index, long target)
+        private Result<int> SumTo(int index, long target)
         {
-            long sum = 0;
-            for (int i = index; i < this.lines.Length; i++)
+            long sum = lines[index];
+            for (int i = index + 1; i < this.lines.Length; i++)
             {
                 sum += this.lines[i];
 
                 if (sum == target)
                 {
-                    return new Success<int>(i);
+                    return new Success<int>(i - index);
                 }
                 if (sum > target)
                 {
@@ -68,18 +65,18 @@ namespace Aoc2020.Lib.Day09
             return new Failure<int>();
         }
 
-        private bool CanSumTo(int index, long target)
+        private bool CannotSumTo(int index, long target)
         {
             var sum = new HashSet<long>();
             for (int i = 0; i < this.preamble; i++)
             {
                 if (sum.Contains(target - this.lines[index + i]))
                 {
-                    return true;
+                    return false;
                 }
                 sum.Add(this.lines[index + i]);
             }
-            return false;
+            return true;
         }
     }
 }
