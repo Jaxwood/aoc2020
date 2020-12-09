@@ -6,21 +6,21 @@ namespace Aoc2020.Lib.Day09
 {
     public class XMASEncrypter
     {
-        private readonly long[] lines;
+        private readonly long[] numbers;
 
         public readonly int preamble;
 
-        public XMASEncrypter(long[] lines, int preamble)
+        public XMASEncrypter(long[] numbers, int preamble)
         {
-            this.lines = lines;
+            this.numbers = numbers;
             this.preamble = preamble;
         }
 
         public Result<long> Cypher()
         {
-            for (int i = 0; i < this.lines.Length - this.preamble; i++)
+            for (int i = 0; i < this.numbers.Length - this.preamble; i++)
             {
-                long target = this.lines[i + this.preamble];
+                long target = this.numbers[i + this.preamble];
                 if (this.CannotSumTo(i, target))
                 {
                     return new Success<long>(target);
@@ -33,12 +33,12 @@ namespace Aoc2020.Lib.Day09
         public Result<long> Weakness()
         {
             var cypher = this.Cypher();
-            for (int i = 0; i < this.lines.Length; i++)
+            for (int i = 0; i < this.numbers.Length; i++)
             {
                 var result = this.SumTo(i, cypher.Value);
                 if (result is Success<int>)
                 {
-                    var nums = this.lines.Skip(i).Take(result.Value);
+                    var nums = this.numbers.Skip(i).Take(result.Value);
                     return new Success<long>(nums.Min() + nums.Max());
                 }
             }
@@ -48,10 +48,10 @@ namespace Aoc2020.Lib.Day09
 
         private Result<int> SumTo(int index, long target)
         {
-            long sum = lines[index];
-            for (int i = index + 1; i < this.lines.Length; i++)
+            long sum = numbers[index];
+            for (int i = index + 1; i < this.numbers.Length; i++)
             {
-                sum += this.lines[i];
+                sum += this.numbers[i];
 
                 if (sum == target)
                 {
@@ -70,11 +70,11 @@ namespace Aoc2020.Lib.Day09
             var sum = new HashSet<long>();
             for (int i = 0; i < this.preamble; i++)
             {
-                if (sum.Contains(target - this.lines[index + i]))
+                if (sum.Contains(target - this.numbers[index + i]))
                 {
                     return false;
                 }
-                sum.Add(this.lines[index + i]);
+                sum.Add(this.numbers[index + i]);
             }
             return true;
         }
