@@ -12,12 +12,10 @@ namespace Aoc2020.Lib.Day10
 
         public JoltAdapter(IEnumerable<int> adapters)
         {
-            var tmp = adapters.ToList();
-            tmp.Add(tmp.Max() + 3);
-            tmp.Add(0);
+            var tmp = adapters.Concat(new int[] { 0, adapters.Max() + 3 }).ToList();
             tmp.Sort();
             this.adapters = tmp;
-            this.adapterSet = new HashSet<int>(this.adapters);
+            this.adapterSet = new HashSet<int>(tmp);
         }
 
         public int Chain()
@@ -45,42 +43,33 @@ namespace Aoc2020.Lib.Day10
 
         public long Pathways()
         {
-            var dict = new Dictionary<int, long>();
+            var branches = new Dictionary<int, long>();
             foreach (var adapter in this.adapters)
             {
                 var pathways = this.Connections(adapter);
-                dict.Add(adapter, pathways.Count());
+                branches.Add(adapter, pathways.Count());
             }
 
-            var result = BigInteger.One;
             foreach (var adapter in this.adapters.Reverse())
             {
-                if (dict[adapter] > 1)
+                if (branches[adapter] > 1)
                 {
-                    long count = 0;
-                    foreach (var con in this.Connections(adapter))
-                    {
-                        count += FindPathways(con, dict);
-                    }
-                    dict[adapter] = count;
+                    branches[adapter] = this.Connections(adapter)
+                        .Aggregate(0L, (acc, n) => acc + NextBranchCount(n, branches));
                 }
             }
 
-            return dict.First(kv => kv.Value > 1).Value;
+            return branches.First(kv => kv.Value > 1).Value;
         }
 
-        private long FindPathways(int con, IDictionary<int, long> dict)
+        private long NextBranchCount(int con, IDictionary<int, long> branches)
         {
-            var seq = this.adapters.SkipWhile(c => c != con);
-            foreach (var s in seq)
-            {
-                if (dict[s] > 1)
-                {
-                    return dict[s];
-                }
-            }
-
-            return 1;
+            return this.adapters
+                .SkipWhile(c => c != con)
+                .Where(c => branches[c] > 1)
+                .Select(c => branches[c])
+                .DefaultIfEmpty(1L)
+                .First();
         }
 
         private IEnumerable<int> Connections(int current)
