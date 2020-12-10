@@ -44,21 +44,22 @@ namespace Aoc2020.Lib.Day10
 
         public BigInteger Pathways()
         {
-            // var tree = Build(new Tree(0));
-            var sum = Sum(0);
-            return sum;
-        }
-        private BigInteger Sum(int current)
-        {
+            var queue = new Queue<int>();
+            queue.Enqueue(0);
             var result = BigInteger.Zero;
-            var nodes = this.Connections(current);
-            if (nodes.Count() == 0)
+            while (queue.Count > 0)
             {
-                return 1;
-            }
-            foreach (var node in nodes)
-            {
-                result = BigInteger.Add(result, Sum(node));
+                var current = queue.Dequeue();
+                var pathways = this.Connections(current);
+                if (pathways.Count() == 0)
+                {
+                    result += 1;
+                }
+
+                foreach (var pathway in pathways)
+                {
+                    queue.Enqueue(pathway);
+                }
             }
 
             return result;
