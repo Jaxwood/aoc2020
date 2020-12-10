@@ -23,8 +23,8 @@ namespace Aoc2020.Tests.Day10
         [Theory]
         [InlineData("Day10/Example1.txt", 8)]
         [InlineData("Day10/Example2.txt", 19208)]
-        // [InlineData("Day10/Input.txt", 0)]
-        public void Part2(string filepath, int expected)
+        [InlineData("Day10/Input.txt", 169255295254528)]
+        public void Part2(string filepath, long expected)
         {
             var parser = new Parser(filepath);
             var lines = parser.Parse(new IdentityFactory());

@@ -14,6 +14,7 @@ namespace Aoc2020.Lib.Day10
         {
             var tmp = adapters.ToList();
             tmp.Add(tmp.Max() + 3);
+            tmp.Add(0);
             tmp.Sort();
             this.adapters = tmp;
             this.adapterSet = new HashSet<int>(this.adapters);
@@ -35,34 +36,51 @@ namespace Aoc2020.Lib.Day10
                 {
                     threeDiff++;
                 }
-                
+
                 current = adapter;
 
             }
             return oneDiff * threeDiff;
         }
 
-        public BigInteger Pathways()
+        public long Pathways()
         {
-            var queue = new Queue<int>();
-            queue.Enqueue(0);
-            var result = BigInteger.Zero;
-            while (queue.Count > 0)
+            var dict = new Dictionary<int, long>();
+            foreach (var adapter in this.adapters)
             {
-                var current = queue.Dequeue();
-                var pathways = this.Connections(current);
-                if (pathways.Count() == 0)
-                {
-                    result += 1;
-                }
+                var pathways = this.Connections(adapter);
+                dict.Add(adapter, pathways.Count());
+            }
 
-                foreach (var pathway in pathways)
+            var result = BigInteger.One;
+            foreach (var adapter in this.adapters.Reverse())
+            {
+                if (dict[adapter] > 1)
                 {
-                    queue.Enqueue(pathway);
+                    long count = 0;
+                    foreach (var con in this.Connections(adapter))
+                    {
+                        count += FindPathways(con, dict);
+                    }
+                    dict[adapter] = count;
                 }
             }
 
-            return result;
+            return dict.First(kv => kv.Value > 1).Value;
+        }
+
+        private long FindPathways(int con, IDictionary<int, long> dict)
+        {
+            var seq = this.adapters.SkipWhile(c => c != con);
+            foreach (var s in seq)
+            {
+                if (dict[s] > 1)
+                {
+                    return dict[s];
+                }
+            }
+
+            return 1;
         }
 
         private IEnumerable<int> Connections(int current)
