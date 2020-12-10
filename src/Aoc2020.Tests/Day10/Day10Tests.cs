@@ -19,5 +19,18 @@ namespace Aoc2020.Tests.Day10
             var actual = sut.Chain();
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day10/Example1.txt", 8)]
+        [InlineData("Day10/Example2.txt", 19208)]
+        // [InlineData("Day10/Input.txt", 0)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var lines = parser.Parse(new IdentityFactory());
+            var sut = new JoltAdapter(lines);
+            var actual = sut.Pathways();
+            Assert.Equal(expected, actual);
+        }
     }
 }
