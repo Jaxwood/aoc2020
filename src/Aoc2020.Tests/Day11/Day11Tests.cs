@@ -21,6 +21,19 @@ namespace Aoc2020.Tests.Day11
             var actual = sut.OccupiedSeats();
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day11/Example1.txt", 26)]
+        [InlineData("Day11/Input.txt", 1978)]
+        public void Part2(string filepath, int expected)
+        {
+            var parser = new Parser(filepath);
+            var seats = parser.Parse(new SeatingFactory());
+            var sut = new SeatingLayout(
+                new Dictionary<(int, int), SeatType>(seats.SelectMany(c => c)), false);
+            var actual = sut.OccupiedSeats();
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class SeatingFactory : IParseFactory<IEnumerable<KeyValuePair<(int,int), SeatType>>>

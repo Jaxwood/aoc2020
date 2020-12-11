@@ -1,4 +1,6 @@
-﻿namespace Aoc2020.Lib.Day11
+﻿using System;
+
+namespace Aoc2020.Lib.Day11
 {
     public enum SeatType
     {
