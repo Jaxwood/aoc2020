@@ -6,71 +6,55 @@ namespace Aoc2020.Lib.Day11
 {
     public class SeatingLayout
     {
-        private Seat[][] seats;
+        private IDictionary<(int, int), SeatType> seats;
+        private int rows;
+        private int columns;
 
-        public SeatingLayout(Seat[][] seats)
+        public SeatingLayout(IDictionary<(int, int), SeatType> seats)
         {
             this.seats = seats;
+            this.columns = seats.Max(kv => kv.Key.Item1);
+            this.rows = seats.Max(kv => kv.Key.Item2);
         }
 
         public int OccupiedSeats()
         {
-            var nextState = new Seat[seats.Length][];
-            for (int i = 0; i < nextState.Length; i++)
-            {
-                nextState[i] = new Seat[this.seats[i].Length];
-            }
             while (true)
             {
-                for (int y = 0; y < this.seats.Length; y++)
+                var nextState = new Dictionary<(int, int), SeatType>();
+                foreach (var (x,y) in this.seats.Keys)
                 {
-                    for (int x = 0; x < this.seats[y].Length; x++)
-                    {
-                        nextState[y][x] = this.CalculateState(x, y);
-                    }
+                    nextState[(x,y)] = this.CalculateState(x, y);
                 }
-                if (IsSameState(nextState)) break;
-                this.seats = this.CopyArray(nextState);
+                if (IsSame(nextState)) break;
+                this.seats = nextState;
             }
-            return this.seats
-                .SelectMany(s => s)
-                .Count(s => s.Type == SeatType.Occupied);
+            return this.seats.Values
+                .Count(v => v == SeatType.Occupied);
         }
 
-        private bool IsSameState(Seat[][] nextState)
+        private bool IsSame(Dictionary<(int, int), SeatType> other)
         {
-            for (int i = 0; i < nextState.Length; i++)
-            {
-                if (!nextState[i].SequenceEqual(this.seats[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return this.seats.SequenceEqual(other);
         }
 
-        private Seat[][] CopyArray(Seat[][] source)
+        private SeatType CalculateState(int x, int y)
         {
-            return source.Select(s => s.ToArray()).ToArray();
-        }
-
-        private Seat CalculateState(int x, int y)
-        {
-            var seat = this.seats[y][x];
-            switch (seat.Type)
+            var seat = this.seats[(x,y)];
+            switch (seat)
             {
                 case SeatType.Floor:
-                    return new Seat(SeatType.Floor);
+                    return SeatType.Floor;
                 case SeatType.Empty:
                     return this.OccupiedCount(x, y) == 0
-                        ? new Seat(SeatType.Occupied)
-                        : new Seat(SeatType.Empty);
+                        ? SeatType.Occupied
+                        : SeatType.Empty;
                 case SeatType.Occupied:
                     return this.OccupiedCount(x, y) >= 4
-                        ? new Seat(SeatType.Empty)
-                        : new Seat(SeatType.Occupied);
+                        ? SeatType.Empty
+                        : SeatType.Occupied;
                 default:
-                    throw new Exception($"Unhandled seat type {seat.Type}");
+                    throw new Exception($"Unhandled seat type {seat}");
             }
         }
 
@@ -82,10 +66,10 @@ namespace Aoc2020.Lib.Day11
                               .Select(xx => (xx + x, yy + y))
             ).SelectMany(t => t)
             .Where(c => c != (x, y))
-            .Where(c => c.Item1 >= 0 && c.Item1 < seats[y].Length)
-            .Where(c => c.Item2 >= 0 && c.Item2 < seats.Length)
-            .Select(c => this.seats[c.Item2][c.Item1])
-            .Count(s => s.Type == SeatType.Occupied);
+            .Where(c => c.Item1 >= 0 && c.Item1 <= this.columns)
+            .Where(c => c.Item2 >= 0 && c.Item2 <= this.rows)
+            .Select(c => this.seats[(c.Item1, c.Item2)])
+            .Count(s => s == SeatType.Occupied);
         }
     }
 }

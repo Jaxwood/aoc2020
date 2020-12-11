@@ -16,35 +16,37 @@ namespace Aoc2020.Tests.Day11
         {
             var parser = new Parser(filepath);
             var seats = parser.Parse(new SeatingFactory());
-            var sut = new SeatingLayout(seats.ToArray());
+            var sut = new SeatingLayout(
+                new Dictionary<(int, int), SeatType>(seats.SelectMany(c => c)));
             var actual = sut.OccupiedSeats();
             Assert.Equal(expected, actual);
         }
     }
 
-    internal class SeatingFactory : IParseFactory<Seat[]>
+    internal class SeatingFactory : IParseFactory<IEnumerable<KeyValuePair<(int,int), SeatType>>>
     {
-        public Seat[] Create(Line line)
+        public IEnumerable<KeyValuePair<(int,int), SeatType>> Create(Line line)
         {
-            var seats = new List<Seat>();
-            foreach (var seat in line.Raw)
+            var seats = new List<KeyValuePair<(int, int), SeatType>>();
+            for (int x = 0; x < line.Raw.Length; x++)
             {
+                var seat = line.Raw[x];
                 switch (seat)
                 {
                     case 'L':
-                        seats.Add(new Seat(SeatType.Empty));
+                        seats.Add(new KeyValuePair<(int, int), SeatType>((x, line.LineNum), SeatType.Empty));
                         break;
                     case '#':
-                        seats.Add(new Seat(SeatType.Occupied));
+                        seats.Add(new KeyValuePair<(int, int), SeatType>((x, line.LineNum), SeatType.Occupied));
                         break;
                     case '.':
-                        seats.Add(new Seat(SeatType.Floor));
+                        seats.Add(new KeyValuePair<(int, int), SeatType>((x, line.LineNum), SeatType.Floor));
                         break;
                     default:
                         throw new Exception($"unknown seat type: {seat}");
                 }
             }
-            return seats.ToArray();
+            return seats;
         }
     }
 }
