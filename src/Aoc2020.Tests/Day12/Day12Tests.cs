@@ -14,8 +14,8 @@ namespace Aoc2020.Tests.Day12
         {
             var parser = new Parser(filename);
             var moves = parser.Parse(new NavigationFactory());
-            var sut = new Ship(moves);
-            var actual = sut.Navigate();
+            Ship sut = new RegularShip(moves, new Compass(Direction.East));
+            var actual = sut.Sail();
             Assert.Equal(expected, actual);
         }
 
@@ -26,8 +26,8 @@ namespace Aoc2020.Tests.Day12
         {
             var parser = new Parser(filename);
             var moves = parser.Parse(new NavigationFactory());
-            var sut = new Ship(moves);
-            var actual = sut.NavigateByWaypoint();
+            Ship sut = new WaypointShip(moves, new Compass[] { new Compass(Direction.East), new Compass(Direction.North) });
+            var actual = sut.Sail();
             Assert.Equal(expected, actual);
         }
     }
