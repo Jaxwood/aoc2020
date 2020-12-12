@@ -95,8 +95,8 @@ namespace Aoc2020.Lib.Day12
                         }
                         break;
                     case Direction.Forward:
-                        var (wx, wy) = this.coord;
-                        this.coord = (move.Units * x + wx, move.Units * y + wy);
+                        var (cx, cy) = this.coord;
+                        this.coord = (move.Units * x + cx, move.Units * y + cy);
                         break;
                     default:
                         throw new Exception($"unknown direction {move.Direction}");
@@ -104,24 +104,6 @@ namespace Aoc2020.Lib.Day12
             }
 
             return Math.Abs(this.coord.Item1) + Math.Abs(this.coord.Item2);
-        }
-
-        private (int, int) MoveToWaypoint(Move move)
-        {
-            var (x, y) = this.coord;
-            switch (this.facing)
-            {
-                case Direction.North:
-                    return (x, y - move.Units);
-                case Direction.South:
-                    return (x, y + move.Units);
-                case Direction.East:
-                    return (x + move.Units, y);
-                case Direction.West:
-                    return (x - move.Units, y);
-                default:
-                    throw new Exception($"unsupported direction {this.facing}");
-            }
         }
 
         private (int, int) Move(Move move)
