@@ -17,21 +17,19 @@ namespace Aoc2020.Lib.Day12
         }
 
         public void Turn(Move move) =>
-            this.needle = this.GenerateClock(move.Direction, this.needle)[move.Units / 90];
+            this.needle = this.GenerateClock(move.Direction)[move.Units / 90];
 
         public Direction Read() => this.needle;
 
-        private Direction[] GenerateClock(Direction direction, Direction current)
+        private Direction[] GenerateClock(Direction direction)
         {
             if (direction != Direction.Left && direction != Direction.Right)
             {
                 throw new Exception($"{nameof(GenerateClock)} only takes directions left and right");
             }
 
-            var directions = direction == Direction.Left ?
-                new Direction[] { Direction.East, Direction.North, Direction.West, Direction.South } :
-                new Direction[] { Direction.East, Direction.South, Direction.West, Direction.North };
-            var idx = Array.FindIndex(directions, d => d == current);
+            var directions = direction == Direction.Left ? counterClockwise : clockwise;
+            var idx = Array.FindIndex(directions, d => d == this.needle);
             return directions.Skip(idx).Concat(directions.Take(idx)).ToArray();
         }
     }

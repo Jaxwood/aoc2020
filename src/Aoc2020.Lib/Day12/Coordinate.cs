@@ -24,14 +24,30 @@ namespace Aoc2020.Lib.Day12
                     this.X -= move.Units;
                     break;
                 case Direction.North:
-                    this.Y -= move.Units;
+                    this.Y += move.Units;
                     break;
                 case Direction.South:
-                    this.Y += move.Units;
+                    this.Y -= move.Units;
                     break;
                 default:
                     throw new Exception($"unsupported direction {move.Direction}");
             }
+        }
+
+        public void Rotate(Move move)
+        {
+            for (int i = 0; i < move.Units; i += 90)
+            {
+                var oldX = this.X;
+                var oldY = this.Y;
+                this.X = move.Direction == Direction.Left ? -1 * oldY : oldY;
+                this.Y = move.Direction == Direction.Left ? oldX : -1 * oldX;
+            }
+        }
+
+        public Coordinate Multiply(Move move)
+        {
+            return new Coordinate(this.X * move.Units, this.Y * move.Units);
         }
 
         public int Distance()
@@ -44,5 +60,8 @@ namespace Aoc2020.Lib.Day12
             x = this.X;
             y = this.Y;
         }
+
+        public static Coordinate operator +(Coordinate a, Coordinate b)
+            => new Coordinate(a.X + b.X, a.Y + b.Y);
     }
 }

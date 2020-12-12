@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Aoc2020.Lib.Day12
 {
-    public class RegularShip : Ship
+    public class RegularShip
     {
         private readonly IEnumerable<Move> moves;
         private readonly Compass compass;

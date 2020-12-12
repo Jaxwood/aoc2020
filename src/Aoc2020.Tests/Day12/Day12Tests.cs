@@ -14,19 +14,19 @@ namespace Aoc2020.Tests.Day12
         {
             var parser = new Parser(filename);
             var moves = parser.Parse(new NavigationFactory());
-            Ship sut = new RegularShip(moves, new Compass(Direction.East));
+            var sut = new RegularShip(moves, new Compass(Direction.East));
             var actual = sut.Sail();
             Assert.Equal(expected, actual);
         }
 
         [Theory]
         [InlineData("Day12/Example1.txt", 286)]
-        [InlineData("Day12/Input.txt", 0)]
+        [InlineData("Day12/Input.txt", 30761)]
         public void Part2(string filename, int expected)
         {
             var parser = new Parser(filename);
             var moves = parser.Parse(new NavigationFactory());
-            Ship sut = new WaypointShip(moves, new Compass[] { new Compass(Direction.East), new Compass(Direction.North) });
+            var sut = new WaypointShip(moves);
             var actual = sut.Sail();
             Assert.Equal(expected, actual);
         }
