@@ -18,6 +18,18 @@ namespace Aoc2020.Tests.Day12
             var actual = sut.Navigate();
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day12/Example1.txt", 286)]
+        [InlineData("Day12/Input.txt", 0)]
+        public void Part2(string filename, int expected)
+        {
+            var parser = new Parser(filename);
+            var moves = parser.Parse(new NavigationFactory());
+            var sut = new Ship(moves);
+            var actual = sut.NavigateByWaypoint();
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class NavigationFactory : IParseFactory<Move>
