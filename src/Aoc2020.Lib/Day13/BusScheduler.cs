@@ -43,12 +43,21 @@ namespace Aoc2020.Lib.Day13
         {
             var highest = this.schedules.Max(tp => tp.Item2);
             var max = this.schedules.First(tp => tp.Item2 == highest);
-            var initial = this.schedules.First().Item2;
-            for (int i = 1; ; i += highest)
+            for (int i = highest; ; i += highest)
             {
-                if ((i - max.Item1) % initial == 0)
+                var match = true;
+                foreach (var (j,s) in this.schedules)
                 {
-                    return i * max.Item1;
+                    if ((i - (max.Item1 - j)) % s != 0)
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match)
+                {
+                    return i - max.Item1;
                 }
             }
         }
