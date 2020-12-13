@@ -39,6 +39,20 @@ namespace Aoc2020.Lib.Day13
             return (bestTimeSlot - departureTime) * bestBus;
         }
 
+        public long ScheduleByOffset()
+        {
+            var highest = this.schedules.Max(tp => tp.Item2);
+            var max = this.schedules.First(tp => tp.Item2 == highest);
+            var initial = this.schedules.First().Item2;
+            for (int i = 1; ; i += highest)
+            {
+                if ((i - max.Item1) % initial == 0)
+                {
+                    return i * max.Item1;
+                }
+            }
+        }
+
         public IEnumerable<int> Generate(int interval)
         {
             var num = interval;

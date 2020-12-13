@@ -13,5 +13,17 @@ namespace Aoc2020.Tests.Day13
             var sut = new BusScheduler(schedule);
             Assert.Equal(expected, sut.Schedule(departureTime));
         }
+
+        [Theory]
+        [InlineData("17,x,13,19", 3417)]
+        [InlineData("67,7,59,61", 754018)]
+        [InlineData("67,x,7,59,61", 779210)]
+        [InlineData("67,7,x,59,61", 1261476)]
+        [InlineData("1789,37,47,1889", 1202161486)]
+        public void Part2(string schedule, int expected)
+        {
+            var sut = new BusScheduler(schedule);
+            Assert.Equal(expected, sut.ScheduleByOffset());
+        }
     }
 }
