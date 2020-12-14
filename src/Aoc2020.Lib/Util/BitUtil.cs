@@ -17,5 +17,16 @@ namespace Aoc2020.Lib.Util
             return result;
         }
 
+        public static long ConvertBitArrayToLong(BitArray bitArr, int idx = default)
+        {
+            var result = 0L;
+
+            for (int bit = 0; bit < bitArr.Length; bit++)
+            {
+                result += bitArr[bit] ? Convert.ToInt64(Math.Pow(2, bit)) : 0L;
+            }
+
+            return result;
+        }
     }
 }

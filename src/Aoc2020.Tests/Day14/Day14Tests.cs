@@ -18,20 +18,20 @@ namespace Aoc2020.Tests.Day14
             var parser = new Parser(filepath);
             var masks = parser.Parse(new BitmaskFactory())
                 .Where(m => m != null);
-            var sut = new PortComputer(masks);
+            var sut = new PortComputer(masks, new ValueDecoder());
             var actual = sut.Decode();
             Assert.Equal(expected, actual);
         }
 
         [Theory]
         [InlineData("Day14/Example2.txt", 208)]
-        [InlineData("Day14/Input.txt", 0)]
+        [InlineData("Day14/Input.txt", 4795970362286)]
         public void Part2(string filepath, long expected)
         {
             var parser = new Parser(filepath);
             var masks = parser.Parse(new BitmaskFactory())
                 .Where(m => m != null);
-            var sut = new PortComputer(masks);
+            var sut = new PortComputer(masks, new AddressDecoder());
             var actual = sut.MemoryDecode();
             Assert.Equal(expected, actual);
         }
