@@ -20,7 +20,8 @@ namespace Aoc2020.Tests.Day13
         [InlineData("67,x,7,59,61", 779210)]
         [InlineData("67,7,x,59,61", 1261476)]
         [InlineData("1789,37,47,1889", 1202161486)]
-        public void Part2(string schedule, int expected)
+        [InlineData("23,x,x,x,x,x,x,x,x,x,x,x,x,41,x,x,x,37,x,x,x,x,x,479,x,x,x,x,x,x,x,x,x,x,x,x,13,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,373,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,19", 539746751134958)]
+        public void Part2(string schedule, long expected)
         {
             var sut = new BusScheduler(schedule);
             Assert.Equal(expected, sut.ScheduleByOffset());
