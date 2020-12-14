@@ -23,29 +23,25 @@ namespace Aoc2020.Lib.Day14
             }
         }
 
-        public long Decode()
+        public long Decode(bool updateMemory = false)
         {
             foreach (var m in this.masks)
             {
                 foreach (var n in m.Memory)
                 {
-                    this.memory[n.Key] = this.decoder.Decode(m.MaskValues, n.Value).First();
-                }
-            }
-
-            return this.memory.Values.Select(BitUtil.ConvertBitArrayToLong).Sum();
-        }
-
-        public long MemoryDecode()
-        {
-            foreach (var m in this.masks)
-            {
-                foreach (var n in m.Memory)
-                {
-                    var floatingBits = this.decoder.Decode(m.MaskValues, BitUtil.ConvertLongToBitArray(n.Key));
-                    foreach (var d in floatingBits)
+                    if (updateMemory)
                     {
-                        this.memory[BitUtil.ConvertBitArrayToLong(d)] = n.Value;
+                        foreach (var code in this.decoder.Decode(m.MaskValues, BitUtil.ConvertLongToBitArray(n.Key)))
+                        {
+                            this.memory[BitUtil.ConvertBitArrayToLong(code)] = n.Value;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var code in this.decoder.Decode(m.MaskValues, n.Value))
+                        {
+                            this.memory[n.Key] = code;
+                        }
                     }
                 }
             }

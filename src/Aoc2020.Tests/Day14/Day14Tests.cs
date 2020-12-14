@@ -32,7 +32,7 @@ namespace Aoc2020.Tests.Day14
             var masks = parser.Parse(new BitmaskFactory())
                 .Where(m => m != null);
             var sut = new PortComputer(masks, new AddressDecoder());
-            var actual = sut.MemoryDecode();
+            var actual = sut.Decode(true);
             Assert.Equal(expected, actual);
         }
     }
