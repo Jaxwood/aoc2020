@@ -19,7 +19,20 @@ namespace Aoc2020.Tests.Day14
             var masks = parser.Parse(new BitmaskFactory())
                 .Where(m => m != null);
             var sut = new PortComputer(masks);
-            var actual = sut.Compute();
+            var actual = sut.Decode();
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day14/Example2.txt", 208)]
+        [InlineData("Day14/Input.txt", 0)]
+        public void Part2(string filepath, long expected)
+        {
+            var parser = new Parser(filepath);
+            var masks = parser.Parse(new BitmaskFactory())
+                .Where(m => m != null);
+            var sut = new PortComputer(masks);
+            var actual = sut.MemoryDecode();
             Assert.Equal(expected, actual);
         }
     }
@@ -27,7 +40,7 @@ namespace Aoc2020.Tests.Day14
     internal class BitmaskFactory : IParseFactory<Mask>
     {
         private IEnumerable<MaskValues> mask;
-        private List<KeyValuePair<int, BitArray>> memory;
+        private List<KeyValuePair<long, BitArray>> memory;
         private const int SIZE = 36;
 
         public Mask Create(Line line)
@@ -54,14 +67,10 @@ namespace Aoc2020.Tests.Day14
             // handle memory
             var segments = line.Raw.Split(new char[] { '[', ']', '=' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            var result = new BitArray(SIZE, false);
-            var val = Convert.ToString(Convert.ToInt32(segments[2]), 2);
-            for (var i = 0; i < val.Length; i++)
-            {
-                result.Set(val.Length - 1 - i, val[i] == '1');
-            }
+            var val = Convert.ToInt64(segments[2]);
+            var result = BitUtil.ConvertLongToBitArray(val);
 
-            this.memory.Add(new(Convert.ToInt32(segments[1]), result));
+            this.memory.Add(new(Convert.ToInt64(segments[1]), result));
 
             if (line.LastLine)
             {
@@ -77,7 +86,7 @@ namespace Aoc2020.Tests.Day14
             var result = new MaskValues[SIZE];
             for (int pos = 0; pos < stringMask.Length; pos++)
             {
-                result[SIZE - 1 - pos] = stringMask[pos] == 'X' ? MaskValues.Ignore : (stringMask[pos] == '1' ? MaskValues.One : MaskValues.Zero);
+                result[SIZE - 1 - pos] = stringMask[pos] == 'X' ? MaskValues.Floating : (stringMask[pos] == '1' ? MaskValues.One : MaskValues.Zero);
             }
             this.mask = result;
         }
