@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,6 @@ namespace Aoc2020.Lib.Day15
 {
     public class MemoryGame
     {
-        private readonly ISet<int> spokenNumbers;
         private readonly IDictionary<int, int> lastSeen;
         private readonly int turns;
         private int turn;
@@ -17,11 +17,10 @@ namespace Aoc2020.Lib.Day15
             var nums = numbers.Split(",", StringSplitOptions.RemoveEmptyEntries)
                               .Select((c, i) => new KeyValuePair<int, int>(
                                   Convert.ToInt32(c),  i + 1));
-            this.spokenNumbers = new HashSet<int>(nums.Select(c => c.Key).ToArray()[..^1]);
             this.lastSeen = new Dictionary<int, int>(nums.ToArray()[..^1]);
             
             this.turns = turns;
-            this.turn = spokenNumbers.Count + 1;
+            this.turn = this.lastSeen.Count + 1;
             this.lastSpoken = nums.Last().Key;
         }
 
@@ -29,8 +28,7 @@ namespace Aoc2020.Lib.Day15
         {
             while (turn != turns)
             {
-                var next = !spokenNumbers.Contains(this.lastSpoken) ? 0 : turn - lastSeen[this.lastSpoken];
-                this.spokenNumbers.Add(this.lastSpoken);
+                var next = this.lastSeen.TryGetValue(this.lastSpoken, out int val) ? this.turn - val : 0;
                 this.lastSeen[this.lastSpoken] = this.turn;
                 this.lastSpoken = next;
                 this.turn++;
