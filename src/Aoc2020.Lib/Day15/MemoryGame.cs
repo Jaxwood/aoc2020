@@ -6,8 +6,8 @@ namespace Aoc2020.Lib.Day15
 {
     public class MemoryGame
     {
-        private readonly HashSet<int> spokenNumbers;
-        private readonly Dictionary<int, int> lastSeen;
+        private readonly ISet<int> spokenNumbers;
+        private readonly IDictionary<int, int> lastSeen;
         private readonly int turns;
         private int turn;
         private int lastSpoken;
@@ -29,9 +29,7 @@ namespace Aoc2020.Lib.Day15
         {
             while (turn != turns)
             {
-                var next = !spokenNumbers.Contains(this.lastSpoken)
-                    ? 0
-                    : turn - lastSeen[this.lastSpoken];
+                var next = !spokenNumbers.Contains(this.lastSpoken) ? 0 : turn - lastSeen[this.lastSpoken];
                 this.spokenNumbers.Add(this.lastSpoken);
                 this.lastSeen[this.lastSpoken] = this.turn;
                 this.lastSpoken = next;
