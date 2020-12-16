@@ -23,6 +23,19 @@ namespace Aoc2020.Tests.Day16
             var actual = sut.InvalidTickets();
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day16/Input.txt", 1429779530273)]
+        public void Part2(string filename, long expected)
+        {
+            var parser = new Parser(filename);
+            var book = parser.Parse(new TicketParser())
+                              .Where(c => c != null)
+                              .First();
+            var sut = new TicketProcessor(book);
+            var actual = sut.Departure();
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class TicketParser : IParseFactory<TicketBook>
@@ -32,7 +45,7 @@ namespace Aoc2020.Tests.Day16
         private const string OTHERTICKETREGEX = @"nearby tickets:";
 
         private readonly Dictionary<string, Range[]> rules;
-        private readonly List<IEnumerable<int>> others;
+        private readonly List<IList<int>> others;
         private IEnumerable<int> my;
 
         private bool myticket = false;
@@ -40,7 +53,7 @@ namespace Aoc2020.Tests.Day16
         public TicketParser()
         {
             this.rules = new Dictionary<string, Range[]>();
-            this.others = new List<IEnumerable<int>>();
+            this.others = new List<IList<int>>();
         }
 
         public TicketBook Create(Line line)
@@ -79,15 +92,15 @@ namespace Aoc2020.Tests.Day16
                 this.others.Add(this.GetTickets(line.Raw));
             }
 
-            if (line.LastLine) return new TicketBook(this.rules, this.my, this.others);
+            if (line.LastLine) return new TicketBook(this.rules, this.my.ToList(), this.others);
 
             return null;
         }
 
-        private IEnumerable<int> GetTickets(string line)
+        private IList<int> GetTickets(string line)
         {
             return line.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                       .Select(c => Convert.ToInt32(c));
+                       .Select(c => Convert.ToInt32(c)).ToList();
         }
 
         private int ToInt(Match match, int idx)
