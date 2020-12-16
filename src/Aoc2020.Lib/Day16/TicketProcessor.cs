@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aoc2020.Lib.Day16
@@ -14,22 +15,27 @@ namespace Aoc2020.Lib.Day16
 
         public long InvalidTickets()
         {
-            return this.book.Others.SelectMany(id => id)
-                            .Where(id => !IsValid(id))
-                            .Sum();
+            return this.book.Others
+                        .Where(id => !IsValid(id))
+                        .SelectMany(t => t)
+                        .Where(t => !MatchRule(t))
+                        .Sum();
         }
 
-        private bool IsValid(int candidate)
+        private bool IsValid(IEnumerable<int> tickets)
         {
-            foreach (var rule in this.book.Rules.Values.SelectMany(rule => rule))
-            {
-                if (candidate >= rule.Start.Value && candidate <= rule.End.Value)
-                {
-                    return true;
-                }
-            }
+            return tickets.All(t => MatchRule(t));
+        }
 
-            return false;
+        private bool MatchRule(int ticket)
+        {
+            return this.book.Rules.Values.SelectMany(id => id)
+                .Any(rule => this.WithinRange(ticket, rule));
+        }
+
+        private bool WithinRange(int ticket, Range range)
+        {
+            return ticket >= range.Start.Value && ticket <= range.End.Value;
         }
     }
 }
