@@ -19,6 +19,18 @@ namespace Aoc2020.Tests.Day17
             var actual = sut.Simulate(cycles);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day17/Example1.txt", 6, 848)]
+        [InlineData("Day17/Input.txt", 6, 848)]
+        public void Part2(string filename, int cycles, long expected)
+        {
+            var parser = new Parser(filename);
+            var cubes = parser.Parse(new CubeParser());
+            var sut = new ConwayCubeSimulator(cubes.SelectMany(c => c));
+            var actual = sut.SimulateHyperCubes(cycles);
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class CubeParser : IParseFactory<IEnumerable<KeyValuePair<Cube, State>>>
