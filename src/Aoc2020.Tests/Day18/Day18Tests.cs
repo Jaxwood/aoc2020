@@ -9,13 +9,25 @@ namespace Aoc2020.Tests.Day18
     public class Day18Tests
     {
         [Theory]
-        [InlineData("Day18/Example1.txt", 26406)]
-        [InlineData("Day18/Input.txt", 11076907812171)]
+        [InlineData("Day18/Example1.txt", 26_457)]
+        [InlineData("Day18/Input.txt", 11_076_907_812_171)]
         public void Part1(string filename, long expected)
         {
             var parser = new Parser(filename);
             var expressions = parser.Parse(new ExpressionFactory());
             var sut = new ExpressionEvaluator(expressions, new LeftPrecedenceEvaluator());
+            var actual = sut.Evaluate();
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day18/Example1.txt", 694_173)]
+        [InlineData("Day18/Input.txt", 283_729_053_022_731)]
+        public void Part2(string filename, long expected)
+        {
+            var parser = new Parser(filename);
+            var expressions = parser.Parse(new ExpressionFactory());
+            var sut = new ExpressionEvaluator(expressions, new PlusPrecedenceEvaluator(new LeftPrecedenceEvaluator()));
             var actual = sut.Evaluate();
             Assert.Equal(expected, actual);
         }
