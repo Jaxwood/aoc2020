@@ -9,6 +9,12 @@ namespace Aoc2020.Lib.Day18
         {
             var result = 0L;
 
+            // number only
+            if (expressions.Length == 1)
+            {
+                return expressions.First().Value;
+            }
+
             for (int i = 1; i < expressions.Count(); i += 2)
             {
                 switch (expressions[i].Token)
