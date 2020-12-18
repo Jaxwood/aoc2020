@@ -35,7 +35,7 @@ namespace Aoc2020.Lib.Day18
                 }
             }
 
-            return this.evaluator.EvaluateExpression(exp.ToArray());
+            return this.evaluator.EvaluateExpression(exp);
         }
 
         private bool HasAddToken(Expression[] exp)
