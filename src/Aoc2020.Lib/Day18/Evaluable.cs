@@ -2,6 +2,6 @@
 {
     public interface Evaluable
     {
-        long EvaluateExpression(Expression[] expressions);
+        long Evaluate(Expression[] expressions);
     }
 }

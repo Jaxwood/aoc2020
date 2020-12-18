@@ -2,6 +2,7 @@
 using Aoc2020.Lib.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Aoc2020.Tests.Day18
@@ -15,8 +16,8 @@ namespace Aoc2020.Tests.Day18
         {
             var parser = new Parser(filename);
             var expressions = parser.Parse(new ExpressionFactory());
-            var sut = new ExpressionEvaluator(expressions, new LeftPrecedenceEvaluator());
-            var actual = sut.Evaluate();
+            var sut = new ExpressionEvaluator(new LeftPrecedenceEvaluator());
+            var actual = expressions.Sum(exp => sut.Evaluate(exp.ToArray()));
             Assert.Equal(expected, actual);
         }
 
@@ -27,8 +28,8 @@ namespace Aoc2020.Tests.Day18
         {
             var parser = new Parser(filename);
             var expressions = parser.Parse(new ExpressionFactory());
-            var sut = new ExpressionEvaluator(expressions, new PlusPrecedenceEvaluator(new LeftPrecedenceEvaluator()));
-            var actual = sut.Evaluate();
+            var sut = new ExpressionEvaluator(new PlusPrecedenceEvaluator(new LeftPrecedenceEvaluator()));
+            var actual = expressions.Sum(exp => sut.Evaluate(exp.ToArray()));
             Assert.Equal(expected, actual);
         }
     }

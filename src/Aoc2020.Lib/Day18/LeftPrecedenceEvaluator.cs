@@ -5,14 +5,14 @@ namespace Aoc2020.Lib.Day18
 {
     public class LeftPrecedenceEvaluator : Evaluable
     {
-        public long EvaluateExpression(Expression[] expressions)
+        public long Evaluate(Expression[] expressions)
         {
             var result = 0L;
 
             // number only
             if (expressions.Length == 1)
             {
-                return expressions.First().Value;
+                result = expressions.First().Value;
             }
 
             for (int i = 1; i < expressions.Count(); i += 2)

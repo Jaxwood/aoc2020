@@ -13,11 +13,11 @@ namespace Aoc2020.Lib.Day18
             this.evaluator = evaluator;
         }
 
-        public long EvaluateExpression(Expression[] expressions)
+        public long Evaluate(Expression[] expressions)
         {
             var queue = new Queue<Expression[]>();
             queue.Enqueue(expressions);
-            var exp = new Expression[0];
+            var exp = Array.Empty<Expression>();
 
             while (queue.Count > 0)
             {
@@ -26,7 +26,7 @@ namespace Aoc2020.Lib.Day18
                 {
                     var idx = Array.FindIndex(exp, c => c.Token == Token.Add) - 1;
                     var toEval = exp.Skip(idx).Take(3).ToArray();
-                    var sum = this.evaluator.EvaluateExpression(toEval);
+                    var sum = this.evaluator.Evaluate(toEval);
                     queue.Enqueue(
                         exp.Take(idx)
                            .Concat(new[] { new Expression(Token.Number, sum) })
@@ -35,7 +35,7 @@ namespace Aoc2020.Lib.Day18
                 }
             }
 
-            return this.evaluator.EvaluateExpression(exp);
+            return this.evaluator.Evaluate(exp);
         }
 
         private bool HasAddToken(Expression[] exp)
