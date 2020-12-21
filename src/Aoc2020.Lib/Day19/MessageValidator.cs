@@ -9,10 +9,10 @@ namespace Aoc2020.Lib.Day19
         private readonly IEnumerable<string> messages;
         private readonly IDictionary<int, Validatable[]> rules;
 
-        public MessageValidator(MonsterMessage monsterMessage)
+        public MessageValidator(Envelope envelope)
         {
-            this.messages = monsterMessage.Messages;
-            this.rules = monsterMessage.Rules;
+            this.messages = envelope.Messages;
+            this.rules = envelope.Rules;
         }
 
         public long Validate(int ruleNumber)

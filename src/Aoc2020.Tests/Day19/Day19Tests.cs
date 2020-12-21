@@ -38,7 +38,7 @@ namespace Aoc2020.Tests.Day19
         }
     }
 
-    internal class MessageFactory : IParseFactory<MonsterMessage>
+    internal class MessageFactory : IParseFactory<Envelope>
     {
         private Dictionary<int, Validatable[]> rules;
         private List<string> messages;
@@ -49,7 +49,7 @@ namespace Aoc2020.Tests.Day19
             this.messages = new List<string>();
         }
 
-        public MonsterMessage Create(Line line)
+        public Envelope Create(Line line)
         {
             if (string.IsNullOrEmpty(line.Raw)) return null;
 
@@ -82,7 +82,7 @@ namespace Aoc2020.Tests.Day19
 
             if (line.LastLine)
             {
-                return new MonsterMessage(this.rules, this.messages);
+                return new Envelope(this.rules, this.messages);
             }
 
             return null;
