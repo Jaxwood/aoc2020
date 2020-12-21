@@ -11,13 +11,14 @@ namespace Aoc2020.Tests.Day20
     {
         [Theory]
         [InlineData("Day20/Example1.txt", 20899048083289)]
+        [InlineData("Day20/Input.txt", 51214443014783)]
         public void Part1(string filename, long expected)
         {
             var parser = new Parser(filename);
             var images = parser.Parse(new ImageFactory())
                                .Where(img => img != null);
             var sut = new ImageReassembler(images);
-            var actual = sut.Reassemble();
+            var actual = sut.Corners();
             Assert.Equal(expected, actual);
         }
     }
