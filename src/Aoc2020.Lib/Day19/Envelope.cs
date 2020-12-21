@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Aoc2020.Lib.Day19.Contracts;
+using System.Collections.Generic;
 
 namespace Aoc2020.Lib.Day19
 {

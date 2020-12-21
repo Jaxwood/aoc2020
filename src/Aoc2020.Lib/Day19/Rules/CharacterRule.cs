@@ -1,4 +1,6 @@
-﻿namespace Aoc2020.Lib.Day19.Rules
+﻿using Aoc2020.Lib.Day19.Contracts;
+
+namespace Aoc2020.Lib.Day19.Rules
 {
     public record CharacterRule : Validatable
     {

@@ -1,4 +1,5 @@
 ﻿using Aoc2020.Lib.Day19;
+using Aoc2020.Lib.Day19.Contracts;
 using Aoc2020.Lib.Day19.Rules;
 using Aoc2020.Lib.Util;
 using System;
