@@ -1,4 +1,5 @@
 ﻿using Aoc2020.Lib.Day19;
+using Aoc2020.Lib.Day19.Rules;
 using Aoc2020.Lib.Util;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Aoc2020.Tests.Day19
 
         [Theory]
         [InlineData("Day19/Example2.txt", 0, 12L)]
-        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414
+        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414 and !410
         public void Part2(string filename, int rule, long expected)
         {
             var parser = new Parser(filename);

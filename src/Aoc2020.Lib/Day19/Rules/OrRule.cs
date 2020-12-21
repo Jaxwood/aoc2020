@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Aoc2020.Lib.Day19
+namespace Aoc2020.Lib.Day19.Rules
 {
     public record OrRule : Validatable
     {
