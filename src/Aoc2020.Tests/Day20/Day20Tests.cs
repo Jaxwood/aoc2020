@@ -18,8 +18,21 @@ namespace Aoc2020.Tests.Day20
             var tiles = parser.Parse(new TileFactory())
                                .Where(img => img != null);
             var sut = new MonochromeImage(tiles);
-            var actual = sut.Corners().Aggregate(1L, (acc, tile) => acc * tile.Id);
+            var actual = sut.CornerTiles().Aggregate(1L, (acc, tile) => acc * tile.Id);
             Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Day20/Example1.txt", 10)]
+        [InlineData("Day20/Input.txt", 10)]
+        public void Part2(string filename, long expected)
+        {
+            var parser = new Parser(filename);
+            var tiles = parser.Parse(new TileFactory())
+                               .Where(img => img != null);
+            var sut = new MonochromeImage(tiles);
+            var actual = sut.BuildImageFromTiles();
+            Assert.Equal(expected, actual.Count());
         }
     }
 

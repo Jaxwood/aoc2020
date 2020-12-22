@@ -7,14 +7,14 @@ namespace Aoc2020.Lib.Day20
     public record Tile
     {
         private readonly int id;
-        private string[] pixels;
+        public string[] pixels;
         private Dictionary<Alignment, string[]> cache = new();
+        private bool locked;
 
         public Tile(int id, string[] pixels)
         {
             this.id = id;
             this.pixels = pixels;
-
             this.Initialize(pixels);
         }
 
@@ -64,6 +64,11 @@ namespace Aoc2020.Lib.Day20
             return borderSet.Count > 0;
         }
 
+        public string[] Orient(Alignment alignment)
+        {
+            return this.cache[alignment];
+        }
+
         private string[] Borders()
         {
             return this.cache.Values.SelectMany(v => new string[] { Top(v), Right(v), Bottom(v), Left(v) }).ToArray();
@@ -87,6 +92,52 @@ namespace Aoc2020.Lib.Day20
         private string Right(string[] data)
         {
             return data.Aggregate(string.Empty, (acc, n) => acc + n.Last());
+        }
+
+        public Direction Align(Tile other)
+        {
+            var direction = Direction.NotSet;
+            var alignment = Array.Empty<string>();
+            foreach (var kv in other.cache)
+            {
+                if (Top(this.pixels) == Bottom(kv.Value))
+                {
+                    direction = Direction.Top;
+                    alignment = kv.Value;
+                }
+                else if (Bottom(this.pixels) == Top(kv.Value))
+                {
+                    direction = Direction.Bottom;
+                    alignment = kv.Value;
+                }
+                else if (Left(this.pixels) == Right(kv.Value))
+                {
+                    direction = Direction.Left;
+                    alignment = kv.Value;
+                }
+                else if (Right(this.pixels) == Left(kv.Value))
+                {
+                    direction = Direction.Right;
+                    alignment = kv.Value;
+                }
+            }
+
+            if (!other.Locked())
+            {
+                other.pixels = alignment;
+                other.Lock();
+            }
+            return direction;
+        }
+
+        public void Lock()
+        {
+            this.locked = true;
+        }
+
+        private bool Locked()
+        {
+            return this.locked;
         }
 
         private void Rotate()
