@@ -1,34 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using Aoc2020.Lib.Util;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aoc2020.Lib.Day22
 {
-    public record Deck
+    public class Deck
     {
         private int[] cards;
-        private int game;
         private HashSet<Deck> memory;
 
-        public Deck(int[] cards, int game = 0)
+        public Deck(int[] cards)
         {
             this.cards = cards;
-            this.game = game;
-            this.memory = new HashSet<Deck>(new DeckComparer());
+            this.memory = new HashSet<Deck>();
         }
 
         public int[] Cards => this.cards;
 
-        public int Game => this.game;
-
-        public int Draw()
+        public Result<int> Draw()
         {
-            this.memory.Add(new Deck(this.cards, this.game));
+            if (this.PreviousHand())
+            {
+                return new Failure<int>();
+            }
+            this.memory.Add(new Deck(this.cards));
             var card = this.cards[0];
             this.cards = this.cards[1..];
-            return card;
+
+            return new Success<int>(card);
         }
 
-        public bool PreviousHand()
+        private bool PreviousHand()
         {
             return this.memory.Contains(this);
         }
@@ -38,9 +40,9 @@ namespace Aoc2020.Lib.Day22
             return this.cards.Length > 0;
         }
 
-        public void Win(int highCard, int lowCard)
+        public void Win(Result<int> highCard, Result<int> lowCard)
         {
-            this.cards = this.cards.Concat(new int[] { highCard, lowCard }).ToArray();
+            this.cards = this.cards.Concat(new int[] { highCard.Value, lowCard.Value }).ToArray();
         }
 
         public long Score()
@@ -49,14 +51,25 @@ namespace Aoc2020.Lib.Day22
                              .Aggregate(0L, (acc, n) => acc + n);
         }
 
-        public bool RecursiveMode(int card)
+        public bool RecursiveMode(Result<int> card)
         {
-            return card <= this.cards.Length;
+            return card.Value <= this.cards.Length;
         }
 
-        public Deck CreateRecursiveDeck(int size, int game)
+        public Deck CreateRecursiveDeck(Result<int> size)
         {
-            return new Deck(this.cards[..size], game);
+            return new Deck(this.cards[..size.Value]);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other is Deck d) return this.cards.SequenceEqual(d.cards);
+            return this.Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.cards.Aggregate((acc, n) => acc ^ n);
         }
     }
 }

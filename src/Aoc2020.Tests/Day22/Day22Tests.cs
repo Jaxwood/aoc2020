@@ -16,8 +16,8 @@ namespace Aoc2020.Tests.Day22
         {
             var parser = new Parser(filename);
             var decks = parser.Parse(new DeckFactory()).Where(c => c != null);
-            var sut = new CombatGame(decks.ToArray());
-            var actual = sut.Play();
+            var sut = new CombatGame();
+            var actual = sut.Play(decks.First(), decks.Last());
             Assert.Equal(expected, actual);
         }
 
@@ -28,7 +28,7 @@ namespace Aoc2020.Tests.Day22
         {
             var parser = new Parser(filename);
             var decks = parser.Parse(new DeckFactory()).Where(c => c != null);
-            var sut = new CombatGame(decks.ToArray());
+            var sut = new CombatGame();
             var (p1, p2) = sut.PlayRecursive(decks.First(), decks.Last());
             var actual = p1.HasCards() ? p1.Score() : p2.Score();
             Assert.Equal(expected, actual);
