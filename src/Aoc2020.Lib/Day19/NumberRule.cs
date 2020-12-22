@@ -17,6 +17,8 @@
                 Position = context.Position,
             };
 
+            if (context.Position == context.Candidate.Length) return result;
+
             foreach (var rule in context.Rules[this.ruleNumber])
             {
                 result = rule.Validate(context with { Position = result.Position });

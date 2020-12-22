@@ -22,6 +22,19 @@ namespace Aoc2020.Tests.Day19
             var actual = sut.Validate(rule);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day19/Example2.txt", 0, 12L)]
+        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414
+        public void Part2(string filename, int rule, long expected)
+        {
+            var parser = new Parser(filename);
+            var lines = parser.Parse(new MessageFactory())
+                              .Where(c => c != null);
+            var sut = new MessageValidator(lines.FirstOrDefault());
+            var actual = sut.Validate(rule);
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class MessageFactory : IParseFactory<MonsterMessage>
