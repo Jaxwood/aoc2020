@@ -4,117 +4,46 @@ using System.Linq;
 
 namespace Aoc2020.Lib.Day20
 {
-    public record MonochromeImage
+    public class MonochromeImage
     {
-        private readonly int tile;
-        private string[] data;
-        private Dictionary<Alignment, string[]> cache = new();
+        private readonly IEnumerable<Tile> tiles;
 
-        public MonochromeImage(int tile, string[] data)
+        public MonochromeImage(IEnumerable<Tile> tiles)
         {
-            this.tile = tile;
-            this.data = data;
-
-            this.Initialize(data);
+            this.tiles = tiles;
         }
 
-        private void Initialize(string[] data)
+        public IEnumerable<Tile> Corners()
         {
-            this.cache[Alignment.Zero | Alignment.Front] = this.data;
+            var result = new Dictionary<int, HashSet<int>>();
+            var size = Math.Sqrt(this.tiles.Count());
 
-            this.Rotate();
-            this.cache[Alignment.Nineteen | Alignment.Front] = this.data;
-
-            this.Rotate();
-            this.cache[Alignment.OneHundredEighty | Alignment.Front] = this.data;
-
-            this.Rotate();
-            this.cache[Alignment.TwoHundredSeventy | Alignment.Front] = this.data;
-
-            this.Rotate();
-            if (!this.data.SequenceEqual(data)) throw new Exception("image not correctly aligned");
-
-            this.Flip();
-            this.cache[Alignment.Zero | Alignment.Back] = this.data;
-
-            this.Rotate();
-            this.cache[Alignment.Nineteen | Alignment.Back] = this.data;
-
-            this.Rotate();
-            this.cache[Alignment.OneHundredEighty | Alignment.Back] = this.data;
-
-            this.Rotate();
-            this.cache[Alignment.TwoHundredSeventy | Alignment.Back] = this.data;
-
-            this.Rotate();
-            this.Flip();
-
-            if (!this.data.SequenceEqual(data)) throw new Exception("image not correctly aligned");
-        }
-
-        public int Tile => this.tile;
-
-        public bool Compare(MonochromeImage other)
-        {
-            var sides = this.Sides();
-            var otherSides = other.Sides();
-            var sidesSet = new HashSet<string>(sides);
-            var otherSet = new HashSet<string>(otherSides);
-            sidesSet.IntersectWith(otherSet);
-            return sidesSet.Count > 0;
-        }
-
-        private string[] Sides()
-        {
-            return this.cache.Values.SelectMany(v => new string[] { Top(v), Right(v), Bottom(v), Left(v) }).ToArray();
-        }
-
-        private string Top(string[] data)
-        {
-            return data.First();
-        }
-
-        private string Bottom(string[] data)
-        {
-            return data.Last();
-        }
-
-        private string Left(string[] data)
-        {
-            return data.Aggregate(string.Empty, (acc, n) => acc + n.First());
-        }
-
-        private string Right(string[] data)
-        {
-            return data.Aggregate(string.Empty, (acc, n) => acc + n.Last());
-        }
-
-        private void Rotate()
-        {
-            var columns = new List<string>();
-            for (int i = 0; i < this.data[0].Length; i++)
+            foreach (var tile in this.tiles)
             {
-                var column = string.Empty;
-                foreach (var row in this.data)
+                var set = new HashSet<int>();
+                var matches = this.MatchTiles(tile);
+                foreach (var match in matches)
                 {
-                    column = row[i] + column;
+                    set.Add(match.Id);
                 }
-                columns.Add(column);
+                result[tile.Id] = set;
             }
 
-            this.data = columns.ToArray();
+            return result.Where(c => c.Value.Count == 2)
+                         .Select(c => this.tiles.First(t => t.Id == c.Key));
         }
 
-        private void Flip()
+        private IEnumerable<Tile> MatchTiles(Tile tile)
         {
-            var result = new List<string>();
+            var others = this.tiles.Where(i => i.Id != tile.Id);
 
-            foreach (var row in this.data)
+            foreach (var other in others)
             {
-                result.Add(String.Join("", row.Reverse()));
+                if (tile.Compare(other))
+                {
+                    yield return other;
+                }
             }
-
-            this.data = result.ToArray();
         }
     }
 }

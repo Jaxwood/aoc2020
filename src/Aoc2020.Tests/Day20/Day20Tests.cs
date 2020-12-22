@@ -15,36 +15,36 @@ namespace Aoc2020.Tests.Day20
         public void Part1(string filename, long expected)
         {
             var parser = new Parser(filename);
-            var images = parser.Parse(new ImageFactory())
+            var tiles = parser.Parse(new TileFactory())
                                .Where(img => img != null);
-            var sut = new ImageReassembler(images);
-            var actual = sut.Corners();
+            var sut = new MonochromeImage(tiles);
+            var actual = sut.Corners().Aggregate(1L, (acc, tile) => acc * tile.Id);
             Assert.Equal(expected, actual);
         }
     }
 
-    internal class ImageFactory : IParseFactory<MonochromeImage>
+    internal class TileFactory : IParseFactory<Tile>
     {
-        private int tile;
-        private List<string> data;
+        private int id;
+        private List<string> pixels;
 
-        public MonochromeImage Create(Line line)
+        public Tile Create(Line line)
         {
             if (line.Raw.StartsWith("Tile"))
             {
-                this.tile = Convert.ToInt32(line.Raw.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[1][..^1]);
-                this.data = new List<string>();
+                this.id = Convert.ToInt32(line.Raw.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[1][..^1]);
+                this.pixels = new List<string>();
                 return null;
             }
 
             if (!string.IsNullOrEmpty(line.Raw))
             {
-                this.data.Add(line.Raw);
+                this.pixels.Add(line.Raw);
             }
 
             if (string.IsNullOrEmpty(line.Raw) || line.LastLine)
             {
-                return new MonochromeImage(this.tile, this.data.ToArray());
+                return new Tile(this.id, this.pixels.ToArray());
             }
 
             return null;
