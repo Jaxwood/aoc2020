@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Aoc2020.Lib.Day19.Contracts
 {
@@ -9,5 +10,10 @@ namespace Aoc2020.Lib.Day19.Contracts
         public int Position { get; init; }
 
         public IDictionary<int, Validatable[]> Rules { get; init; }
+
+        public bool OutOfBounds()
+        {
+            return this.Position >= this.Candidate.Length;
+        }
     }
 }

@@ -27,12 +27,13 @@ namespace Aoc2020.Tests.Day19
 
         [Theory]
         [InlineData("Day19/Example2.txt", 0, 12L)]
-        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414 and !410
+        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414 and !410, !412
         public void Part2(string filename, int rule, long expected)
         {
             var parser = new Parser(filename);
             var lines = parser.Parse(new MessageFactory())
                               .Where(c => c != null);
+            //var sut = new MessageValidator(new Envelope(lines.FirstOrDefault().Rules, new string[] { "aaaabbaaaabbaaa" })); // lines.FirstOrDefault());
             var sut = new MessageValidator(lines.FirstOrDefault());
             var actual = sut.Validate(rule);
             Assert.Equal(expected, actual);

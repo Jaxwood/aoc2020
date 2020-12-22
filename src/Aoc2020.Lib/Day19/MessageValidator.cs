@@ -30,7 +30,7 @@ namespace Aoc2020.Lib.Day19
                     Rules = this.rules,
                 });
 
-                validRules += valid.Valid && valid.Position >= message.Length ? 1 : 0;
+                validRules += valid.Valid && valid.Position == message.Length ? 1 : 0;
             }
 
             return validRules;

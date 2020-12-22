@@ -15,11 +15,9 @@ namespace Aoc2020.Lib.Day19.Rules
         {
             var result = new ValidationResult()
             {
-                Valid = true,
+                Valid = false,
                 Position = context.Position,
             };
-
-            if (context.Position == context.Candidate.Length) return result;
 
             foreach (var rule in context.Rules[this.ruleNumber])
             {
@@ -28,7 +26,8 @@ namespace Aoc2020.Lib.Day19.Rules
                 {
                     return new ValidationResult
                     {
-                        Valid = false
+                        Valid = false,
+                        Position = result.Position,
                     };
                 }
             }

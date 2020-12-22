@@ -13,6 +13,15 @@ namespace Aoc2020.Lib.Day19.Rules
 
         public ValidationResult Validate(ValidationContext context)
         {
+            if (context.OutOfBounds())
+            {
+                return new ValidationResult
+                {
+                    Valid = false,
+                    Position = context.Position,
+                };
+            }
+
             return new ValidationResult
             {
                 Valid = context.Candidate[context.Position] == this.character,
