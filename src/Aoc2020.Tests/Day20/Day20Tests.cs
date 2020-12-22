@@ -23,16 +23,16 @@ namespace Aoc2020.Tests.Day20
         }
 
         [Theory]
-        [InlineData("Day20/Example1.txt", 10)]
-        [InlineData("Day20/Input.txt", 10)]
+        [InlineData("Day20/Example1.txt", 273)]
+        [InlineData("Day20/Input.txt", 2065)]
         public void Part2(string filename, long expected)
         {
             var parser = new Parser(filename);
             var tiles = parser.Parse(new TileFactory())
                                .Where(img => img != null);
             var sut = new MonochromeImage(tiles);
-            var actual = sut.BuildImageFromTiles();
-            Assert.Equal(expected, actual.Count());
+            var actual = sut.FindSeaMosters();
+            Assert.Equal(expected, actual);
         }
     }
 

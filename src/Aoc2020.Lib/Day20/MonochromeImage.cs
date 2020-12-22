@@ -7,11 +7,13 @@ namespace Aoc2020.Lib.Day20
     public class MonochromeImage
     {
         private readonly IEnumerable<Tile> tiles;
+        private readonly int size;
         private readonly Dictionary<int, HashSet<int>> memory;
 
         public MonochromeImage(IEnumerable<Tile> tiles)
         {
             this.tiles = tiles;
+            this.size = (int)Math.Sqrt(tiles.Count());
             this.memory = new Dictionary<int, HashSet<int>>();
             this.Initialize();
         }
@@ -48,27 +50,42 @@ namespace Aoc2020.Lib.Day20
                               .Select(c => this.tiles.First(t => t.Id == c.Key));
         }
 
-        public long BuildImageFromTiles()
+        public long FindSeaMosters()
         {
             var matchedTiles = this.MatchTiles();
             var grid = this.ArrangeTiles(matchedTiles);
             var image = this.BuildMonochromeImage(grid);
 
-            return this.CountSeaMonsters(image);
-        }
-
-        private long CountSeaMonsters(Tile image)
-        {
-            throw new NotImplementedException();
+            return image.Scan();
         }
 
         private Tile BuildMonochromeImage(IDictionary<(int, int), int> grid)
         {
-            // TODO:
             // remove outer border
+            foreach (var kv in grid)
+            {
+                var tile = this.tiles.First(t => t.Id == kv.Value);
+                tile.RemoveBorder();
+            }
             // merge all tiles
+            var result = new List<string>();
+            for (int y = 0; y < this.size; y++)
+            {
+                var yTiles = new List<Tile>();
+                for (int x = 0; x < this.size; x++)
+                {
+                    var tileId = grid[(x, y)];
+                    var tile = this.tiles.First(t => t.Id == tileId);
+                    yTiles.Add(tile);
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    var line = yTiles.Aggregate("", (acc, n) => acc + n.pixels[i]);
+                    result.Add(line);
+                }
+            }
             // return new tile
-            throw new NotImplementedException();
+            return new Tile(0, result.ToArray());
         }
 
         private IDictionary<int, (int, Direction)[]> MatchTiles()
@@ -77,7 +94,6 @@ namespace Aoc2020.Lib.Day20
             var start = this.CornerTiles().First();
             var queue = new Queue<int>();
             var visited = new HashSet<int>();
-            start.Lock();
             queue.Enqueue(start.Id);
             visited.Add(start.Id);
 
@@ -105,7 +121,6 @@ namespace Aoc2020.Lib.Day20
 
         public IDictionary<(int, int), int> ArrangeTiles(IDictionary<int, (int, Direction)[]> arrangement)
         {
-            var size = (int)Math.Sqrt(this.tiles.Count());
             var grid = new Dictionary<(int, int), int>();
             var topleft = arrangement.First(a => a.Value.All(t => t.Item2 == Direction.Bottom || t.Item2 == Direction.Right));
             var queue = new Queue<int>();
@@ -127,7 +142,7 @@ namespace Aoc2020.Lib.Day20
                     x = 0;
                     var leftTile = grid[(x, y)];
                     y++;
-                    if (y != size)
+                    if (y != this.size)
                     {
                         next = arrangement[leftTile];
                         queue.Enqueue(next.First(t => t.Item2 == Direction.Bottom).Item1);

@@ -64,9 +64,83 @@ namespace Aoc2020.Lib.Day20
             return borderSet.Count > 0;
         }
 
-        public string[] Orient(Alignment alignment)
+        public void RemoveBorder()
         {
-            return this.cache[alignment];
+            var result = new List<string>();
+
+            for (var i = 0; i < this.pixels.Length; i++)
+            {
+                if (i == 0 || i == this.pixels.Length - 1) continue;
+                result.Add(this.pixels[i][1..^1]);
+            }
+
+            this.pixels = result.ToArray();
+        }
+
+        private (int, int)[] seaMonsterPattern = new (int, int)[]
+        {
+            (0, 1), (1, 2), (4, 2), (5, 1), (6, 1), (7, 2), (10, 2), (11, 1),
+            (12, 1), (13, 2), (16, 2), (17, 1), (18, 0), (18, 1), (19, 1),
+        };
+
+        public long Scan()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                var set = this.FindSeaMonsters();
+                if (set.Count > 0)
+                {
+                    return this.HazardCount(set);
+                }
+                if (i == 3)
+                {
+                    this.Flip();
+                }
+
+                this.Rotate();
+            }
+
+            return 0L;
+        }
+
+        private long HazardCount(HashSet<(int, int)> set)
+        {
+            var result = 0L;
+
+            for (int y = 0; y < this.pixels.Length; y++)
+            {
+                for (int x = 0; x < this.pixels[0].Length; x++)
+                {
+                    if (this.pixels[y][x] == '#' && !set.Contains((x, y)))
+                    {
+                        result++;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private HashSet<(int, int)> FindSeaMonsters()
+        {
+            var result = new HashSet<(int, int)>();
+            for (int y = 0; y < this.pixels.Length - 2; y++)
+            {
+                for (int x = 0; x < this.pixels.Length - 13; x++)
+                {
+                    var coords = this.seaMonsterPattern.Select(tp => (tp.Item1 + x, tp.Item2 + y));
+                    var fields = coords.Select(c => pixels[c.Item2][c.Item1]);
+                    if (fields.All(c => c == '#'))
+                    {
+                        foreach (var coord in coords)
+                        {
+                            result.Add(coord);
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         private string[] Borders()
@@ -96,6 +170,7 @@ namespace Aoc2020.Lib.Day20
 
         public Direction Align(Tile other)
         {
+            this.Lock();
             var direction = Direction.NotSet;
             var alignment = Array.Empty<string>();
             foreach (var kv in other.cache)
@@ -125,12 +200,11 @@ namespace Aoc2020.Lib.Day20
             if (!other.Locked())
             {
                 other.pixels = alignment;
-                other.Lock();
             }
             return direction;
         }
 
-        public void Lock()
+        private void Lock()
         {
             this.locked = true;
         }
