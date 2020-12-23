@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Aoc2020.Lib.Day23
@@ -13,33 +14,35 @@ namespace Aoc2020.Lib.Day23
             this.cups = cups;
         }
 
-        public string Play(int rounds)
+        public int[] Play(int rounds)
         {
             int round = 1;
-            int index = 0;
             while (round <= rounds)
             {
-                var current = this.cups[index];
-                var pickedUpCups = this.Generate(index).Take(3).ToArray();
-                var cupsLeft = this.Generate(index).Skip(3).Take(this.cups.Length - 3).ToArray();
-                var destination = this.FindDestinationCup(current, cupsLeft);
-                this.cups = cupsLeft.Take(destination).Concat(pickedUpCups).Concat(cupsLeft.Skip(destination)).ToArray();
+                var current = this.cups[0];
+                var pickedUpCups = this.cups[1..4];
+                var cupsLeft = this.cups[4..];
+                this.cups[this.cups.Length - 1] = current;
+                var destination = this.FindDestinationCupIndex(current, cupsLeft);
+                Array.Copy(cupsLeft, 0, this.cups, 0, destination);
+                Array.Copy(pickedUpCups, 0, this.cups, destination, pickedUpCups.Length);
+                Array.Copy(cupsLeft, destination, this.cups, pickedUpCups.Length + destination, cupsLeft.Length - destination);
                 round++;
-
             }
 
             var idxOne = Array.FindIndex(this.cups, c => c == 1);
-            return this.Generate(idxOne).Take(8).Aggregate("", (acc, n) => acc + n);
+            return this.Generate(idxOne).Take(this.cups.Length - 1).ToArray();
         }
 
-        private int FindDestinationCup(int current, int[] cupsLeft)
+        private int FindDestinationCupIndex(int current, int[] cupsLeft)
         {
             while (true)
             {
                 current--;
                 if (current <= 0)
                 {
-                    return this.GuardAgainstOverflow(Array.FindIndex(cupsLeft, c => c == cupsLeft.Max()) + 1);
+                    var max = cupsLeft.Max();
+                    return this.GuardAgainstOverflow(Array.FindIndex(cupsLeft, c => c == max) + 1);
                 }
                 var cupIdx = Array.FindIndex(cupsLeft, c => c == current);
                 if (cupIdx != -1)
