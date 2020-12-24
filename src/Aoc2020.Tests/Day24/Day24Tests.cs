@@ -19,6 +19,18 @@ namespace Aoc2020.Tests.Day24
             var actual = sut.Flip();
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("Day24/Example1.txt", 100, 2208)]
+        [InlineData("Day24/Input.txt", 100, 3876)]
+        public void Part2(string filename, int turns, long expected)
+        {
+            var parser = new Parser(filename);
+            var directions = parser.Parse(new DirectionFactory());
+            var sut = new HexagonalTileFloorBuilder(directions);
+            var actual = sut.Tick(turns);
+            Assert.Equal(expected, actual);
+        }
     }
 
     internal class DirectionFactory : IParseFactory<IEnumerable<Direction>>
