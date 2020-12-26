@@ -1,5 +1,6 @@
 ﻿using Aoc2020.Lib.Day19.Contracts;
 using Aoc2020.Lib.Day19.Rules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -54,19 +55,21 @@ namespace Aoc2020.Lib.Day19
                 }
                 var current = rules.First();
                 var others = rules.Skip(1);
-                if (current is CharacterRule cr)
+                switch (current)
                 {
-                    acc += cr.Character;
-                    stack.Push((others, acc));
-                }
-                if (current is OrRule or)
-                {
-                    stack.Push((or.Left.Concat(others), acc));
-                    stack.Push((or.Right.Concat(others), acc));
-                }
-                if (current is NumberRule)
-                {
-                    stack.Push((this.rules[current.RuleNumber].Concat(others), acc));
+                    case CharacterRule cr:
+                        acc += cr.Character;
+                        stack.Push((others, acc));
+                        break;
+                    case OrRule or:
+                        stack.Push((or.Left.Concat(others), acc));
+                        stack.Push((or.Right.Concat(others), acc));
+                        break;
+                    case NumberRule nr:
+                        stack.Push((this.rules[nr.RuleNumber].Concat(others), acc));
+                        break;
+                    default:
+                        throw new Exception("Unknown rule type");
                 }
             }
 

@@ -2,7 +2,6 @@
 {
     public interface Validatable
     {
-        int RuleNumber { get; }
         ValidationResult Validate(ValidationContext context);
     }
 }

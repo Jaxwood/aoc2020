@@ -40,7 +40,7 @@ namespace Aoc2020.Lib.Day19.Rules
             var result = new ValidationResult()
             {
                 Position = context.Position,
-                Valid = false,
+                Valid = true,
             };
 
             foreach (var r in rules)

@@ -17,14 +17,11 @@ namespace Aoc2020.Lib.Day19.Rules
         {
             var result = new ValidationResult()
             {
-                Valid = false,
+                Valid = true,
                 Position = context.Position,
             };
 
-            if (context.OutOfBounds())
-            {
-                return result with { Valid = true };
-            }
+            if (context.OutOfBounds()) return result;
 
             foreach (var rule in context.Rules[this.ruleNumber])
             {
