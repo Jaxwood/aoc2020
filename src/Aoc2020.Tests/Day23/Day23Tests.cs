@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Xunit;
 
 namespace Aoc2020.Tests.Day23
@@ -16,22 +17,32 @@ namespace Aoc2020.Tests.Day23
         {
             var sut = new CupsGame(cups.Select(c => Convert.ToInt32(c.ToString())).ToArray());
             var actual = sut.Play(rounds);
-            Assert.Equal(expected, actual.Aggregate("", (acc, n) => acc + n));
+            var result = "";
+            var index = 1;
+
+            while (true)
+            {
+                if (actual[index] == 1) break;
+                result += actual[index];
+                index = actual[index];
+            }
+            Assert.Equal(expected, result);
         }
 
         [Theory]
-        [InlineData("389125467", 1_000_000, 149_245_887_792)]
+        [InlineData("389125467", 10_000_000, 149_245_887_792)]
+        [InlineData("538914762", 10_000_000, 157_410_423_276)]
         public void Part2(string cups, int rounds, long expected)
         {
             var cupsArr = cups.Select(c => Convert.ToInt32(c.ToString())).ToArray();
             var sut = new CupsGame(cupsArr.Concat(this.Generate(cupsArr.Max())).ToArray());
             var actual = sut.Play(rounds);
-            Assert.Equal(expected, actual[0] * actual[1]);
+            Assert.Equal(expected, BigInteger.Multiply(actual[1], actual[actual[1]]));
         }
 
         private IEnumerable<int> Generate(int from)
         {
-            while (from < 100_000)
+            while (from < 1_000_000)
             {
                 from = from + 1;
                 yield return from;

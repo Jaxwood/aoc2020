@@ -8,62 +8,62 @@ namespace Aoc2020.Lib.Day23
     public class CupsGame
     {
         private int[] cups;
+        private int max;
 
         public CupsGame(int[] cups)
         {
             this.cups = cups;
+            this.max = cups.Max();
         }
 
         public int[] Play(int rounds)
         {
-            int round = 1;
-            while (round <= rounds)
+            int round = 0;
+            int current = this.cups[0];
+            this.Setup();
+
+            while (round < rounds)
             {
-                var current = this.cups[0];
-                var pickedUpCups = this.cups[1..4];
-                var cupsLeft = this.cups[4..];
-                this.cups[this.cups.Length - 1] = current;
-                var destination = this.FindDestinationCupIndex(current, cupsLeft);
-                Array.Copy(cupsLeft, 0, this.cups, 0, destination);
-                Array.Copy(pickedUpCups, 0, this.cups, destination, pickedUpCups.Length);
-                Array.Copy(cupsLeft, destination, this.cups, pickedUpCups.Length + destination, cupsLeft.Length - destination);
+                var cupsToMove = this.GetNextThreeCups(current);
+                var next = this.GetDestinationCup(current, cupsToMove);
+                this.cups[current] = this.cups[cupsToMove[2]];
+                this.cups[cupsToMove[2]] = this.cups[next];
+                this.cups[next] = cupsToMove[0];
+                current = this.cups[current];
                 round++;
             }
 
-            var idxOne = Array.FindIndex(this.cups, c => c == 1);
-            return this.Generate(idxOne).Take(this.cups.Length - 1).ToArray();
+            return this.cups;
         }
 
-        private int FindDestinationCupIndex(int current, int[] cupsLeft)
+        private int GetDestinationCup(int current, int[] threeCups)
         {
-            while (true)
+            var candidate = current - 1 == 0 ? this.max : current - 1;
+            while (threeCups.Contains(candidate))
             {
-                current--;
-                if (current <= 0)
-                {
-                    var max = cupsLeft.Max();
-                    return this.GuardAgainstOverflow(Array.FindIndex(cupsLeft, c => c == max) + 1);
-                }
-                var cupIdx = Array.FindIndex(cupsLeft, c => c == current);
-                if (cupIdx != -1)
-                {
-                    return this.GuardAgainstOverflow(cupIdx + 1);
-                }
+                candidate--;
+                if (candidate == 0) candidate = this.max;
             }
+            return candidate;
+
         }
 
-        private IEnumerable<int> Generate(int from)
+        private int[] GetNextThreeCups(int current)
         {
-            while (true)
+            var one = this.cups[current];
+            var two = this.cups[one];
+            var three = this.cups[two];
+            return new int[] { one, two, three };
+        }
+
+        private void Setup()
+        {
+            var result = new int[this.cups.Length + 1];
+            for (int i = 0; i < this.cups.Length; i++)
             {
-                from = this.GuardAgainstOverflow(from + 1);
-                yield return this.cups[from];
+                result[this.cups[i]] = i + 1 == this.cups.Length ? this.cups[0] : this.cups[i + 1];
             }
-        }
-
-        private int GuardAgainstOverflow(int idx)
-        {
-            return idx == this.cups.Length ? 0 : idx;
+            this.cups = result;
         }
     }
 }
