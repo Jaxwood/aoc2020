@@ -1,7 +1,7 @@
 ﻿using Aoc2020.Lib.Day19.Contracts;
 using Aoc2020.Lib.Day19.Rules;
-using Aoc2020.Lib.Util;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aoc2020.Lib.Day19
 {
@@ -16,12 +16,14 @@ namespace Aoc2020.Lib.Day19
             this.rules = envelope.Rules;
         }
 
-        public long Validate(int ruleNumber)
+        public long Validate(int ruleNumber, int endPattern)
         {
             var validRules = 0L;
+            var patterns = this.RulePatterns(endPattern);
 
             foreach (var message in this.messages)
             {
+                var endsWith = patterns.Any(p => message.EndsWith(p));
                 var rule = new NumberRule(ruleNumber);
                 var valid = rule.Validate(new ValidationContext
                 {
@@ -30,10 +32,45 @@ namespace Aoc2020.Lib.Day19
                     Rules = this.rules,
                 });
 
-                validRules += valid.Valid && valid.Position == message.Length ? 1 : 0;
+                validRules += endsWith && valid.Valid && valid.Position == message.Length ? 1 : 0;
             }
 
             return validRules;
+        }
+
+        private string[] RulePatterns(int ruleNumber)
+        {
+            var result = new List<string>();
+            var stack = new Stack<(IEnumerable<Validatable>, string)>();
+            stack.Push((this.rules[ruleNumber], ""));
+
+            while (stack.Count > 0)
+            {
+                var (rules, acc) = stack.Pop();
+                if (!rules.Any())
+                {
+                    result.Add(acc);
+                    continue;
+                }
+                var current = rules.First();
+                var others = rules.Skip(1);
+                if (current is CharacterRule cr)
+                {
+                    acc += cr.Character;
+                    stack.Push((others, acc));
+                }
+                if (current is OrRule or)
+                {
+                    stack.Push((or.Left.Concat(others), acc));
+                    stack.Push((or.Right.Concat(others), acc));
+                }
+                if (current is NumberRule)
+                {
+                    stack.Push((this.rules[current.RuleNumber].Concat(others), acc));
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }

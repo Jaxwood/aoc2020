@@ -6,6 +6,8 @@ namespace Aoc2020.Lib.Day19.Rules
     {
         private readonly int ruleNumber;
 
+        public int RuleNumber => this.ruleNumber;
+
         public NumberRule(int ruleNumber)
         {
             this.ruleNumber = ruleNumber;
@@ -18,6 +20,11 @@ namespace Aoc2020.Lib.Day19.Rules
                 Valid = false,
                 Position = context.Position,
             };
+
+            if (context.OutOfBounds())
+            {
+                return result with { Valid = true };
+            }
 
             foreach (var rule in context.Rules[this.ruleNumber])
             {

@@ -5,11 +5,20 @@ namespace Aoc2020.Lib.Day19.Rules
 {
     public record OrRule : Validatable
     {
+        private readonly int ruleNumber;
         private readonly IEnumerable<Validatable> left;
         private readonly IEnumerable<Validatable> right;
 
-        public OrRule(IEnumerable<Validatable> left, IEnumerable<Validatable> right)
+        public IEnumerable<Validatable> Left => this.left;
+
+        public IEnumerable<Validatable> Right => this.right;
+
+        public int RuleNumber => this.ruleNumber;
+
+
+        public OrRule(int ruleNumber, IEnumerable<Validatable> left, IEnumerable<Validatable> right)
         {
+            this.ruleNumber = ruleNumber;
             this.left = left;
             this.right = right;
         }

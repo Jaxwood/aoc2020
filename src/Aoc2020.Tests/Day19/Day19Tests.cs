@@ -13,29 +13,29 @@ namespace Aoc2020.Tests.Day19
     public class Day19Tests
     {
         [Theory]
-        [InlineData("Day19/Example1.txt", 0, 2L)]
-        [InlineData("Day19/Input.txt", 0, 200L)]
-        public void Part1(string filename, int rule, long expected)
+        [InlineData("Day19/Example1.txt", 0, 5, 2L)]
+        [InlineData("Day19/Input.txt", 0, 31, 200L)]
+        public void Part1(string filename, int rule, int end, long expected)
         {
             var parser = new Parser(filename);
             var lines = parser.Parse(new MessageFactory())
                               .Where(c => c != null);
             var sut = new MessageValidator(lines.FirstOrDefault());
-            var actual = sut.Validate(rule);
+            var actual = sut.Validate(rule, end);
             Assert.Equal(expected, actual);
         }
 
         [Theory]
-        [InlineData("Day19/Example2.txt", 0, 12L)]
-        [InlineData("Day19/Input2.txt", 0, 0L)] // > 404 && < 414 and !410, !412
-        public void Part2(string filename, int rule, long expected)
+        [InlineData("Day19/Example2.txt", 0, 31, 12)]
+        [InlineData("Day19/Input2.txt", 0, 31, 407)]
+        public void Part2(string filename, int rule, int end, int expected)
         {
             var parser = new Parser(filename);
             var lines = parser.Parse(new MessageFactory())
                               .Where(c => c != null);
             //var sut = new MessageValidator(new Envelope(lines.FirstOrDefault().Rules, new string[] { "aaaabbaaaabbaaa" })); // lines.FirstOrDefault());
             var sut = new MessageValidator(lines.FirstOrDefault());
-            var actual = sut.Validate(rule);
+            var actual = sut.Validate(rule, end);
             Assert.Equal(expected, actual);
         }
     }
@@ -65,12 +65,12 @@ namespace Aoc2020.Tests.Day19
                     var pipes = segements[1].Split("|", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                     var left = pipes[0].Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(c => new NumberRule(Convert.ToInt32(c)));
                     var right = pipes[1].Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(c => new NumberRule(Convert.ToInt32(c)));
-                    this.rules.Add(num, new [] { new OrRule(left, right) });
+                    this.rules.Add(num, new [] { new OrRule(num, left, right) });
                 }
                 else if (Regex.IsMatch(segements[1], "\"(\\w)\""))
                 {
                     var charRule = Regex.Match(segements[1], "\"(\\w)\"").Groups[1].Value;
-                    this.rules.Add(num, new[] { new CharacterRule(charRule[0]) });
+                    this.rules.Add(num, new[] { new CharacterRule(num, charRule[0]) });
                 }
                 else
                 {
