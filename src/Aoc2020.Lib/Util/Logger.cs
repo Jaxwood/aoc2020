@@ -15,9 +15,9 @@ namespace Aoc2020.Lib.Util
             this.file = new StreamWriter(filename, true);
         }
 
-        public static Logger Create(string filename)
+        public static Logger Create(string filename, bool overwrite = true)
         {
-            if (File.Exists(filename))
+            if (overwrite && File.Exists(filename))
             {
                 File.Delete(filename);
             }
